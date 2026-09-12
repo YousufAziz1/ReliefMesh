@@ -31,7 +31,7 @@ export default function Sidebar() {
   ];
 
   const protocolNav = [
-    { name: 'Cryptographic Proofs', path: '/proofs', icon: 'verified_user' },
+    { name: 'Cryptographic Proofs', path: '/proofs', icon: 'verified' },
     { name: 'Activity Feed', path: '/activity', icon: 'dynamic_feed' },
     { name: 'Judge Mode (3-Min)', path: '/judge', icon: 'bolt' },
   ];
@@ -123,9 +123,15 @@ export default function Sidebar() {
                       : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                 >
-                  <span className={`material-symbols-outlined text-[19px] ${active ? 'text-teal-700' : 'text-slate-400'}`}>
-                    {item.icon}
-                  </span>
+                  {item.path === '/proofs' ? (
+                    <svg className={`w-[19px] h-[19px] shrink-0 ${active ? 'text-teal-700' : 'text-slate-400'}`} fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                  ) : (
+                    <span className={`material-symbols-outlined text-[19px] ${active ? 'text-teal-700' : 'text-slate-400'}`}>
+                      {item.icon}
+                    </span>
+                  )}
                   <span>{item.name}</span>
                 </Link>
               );
