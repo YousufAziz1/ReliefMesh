@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import AppLayout from '@/components/layout/AppLayout';
+import { useProtocolMode } from '@/app/providers';
 import { INITIAL_CAMPAIGN, INITIAL_ACTIVITIES } from '@/lib/demo/data';
 
 export default function OverviewPage() {
+  const { isDemoMode } = useProtocolMode();
   const [campaign, setCampaign] = useState(INITIAL_CAMPAIGN);
 
   const verifiedPct = (campaign.verifiedDonations / campaign.goal) * 100;
@@ -15,16 +17,20 @@ export default function OverviewPage() {
 
   const pillars = [
     {
-      title: 'ATTESTCOIN VERIFIED',
-      subtitle: 'Ethereum Sepolia Proofs',
-      desc: 'Cryptographic storage inclusion proofs mined on Ethereum Sepolia block headers, eliminating centralized bridge risk.',
+      title: isDemoMode ? 'ATTESTCOIN FLOW SIMULATED' : 'ATTESTCOIN PROOF VERIFIED',
+      subtitle: isDemoMode ? 'Ethereum Sepolia Simulation' : 'Ethereum Sepolia Proofs',
+      desc: isDemoMode
+        ? 'Simulated cryptographic storage inclusion flow modeling Sepolia block evidence without live prover API keys.'
+        : 'Cryptographic storage inclusion proofs mined on Ethereum Sepolia block headers, eliminating centralized bridge risk.',
       icon: 'verified',
       color: 'text-teal-700 bg-teal-50 border-teal-200',
     },
     {
-      title: 'CREDITCOIN SETTLED',
-      subtitle: 'CC3 Consensus Layer',
-      desc: 'Immutable state transitions and multi-party campaign accounting inscribed on Creditcoin CC3 Testnet.',
+      title: isDemoMode ? 'CREDITCOIN SETTLEMENT SIMULATED' : 'CREDITCOIN RECEIPT CONFIRMED',
+      subtitle: isDemoMode ? 'CC3 Ledger Simulation' : 'CC3 Consensus Layer',
+      desc: isDemoMode
+        ? 'Multi-party campaign accounting and state transition simulation modeled on Creditcoin CC3 ledger.'
+        : 'Immutable state transitions and multi-party campaign accounting inscribed on Creditcoin CC3 Testnet.',
       icon: 'account_balance',
       color: 'text-blue-700 bg-blue-50 border-blue-200',
     },
@@ -46,9 +52,27 @@ export default function OverviewPage() {
 
   const lifecycleSteps = [
     { num: '01', title: 'Cross-Chain Donation', desc: 'Donor initiates testnet transfer on Ethereum Sepolia.' },
-    { num: '02', title: 'Attestcoin Proof', desc: 'Inclusion proof mined against Sepolia block header.' },
-    { num: '03', title: 'Creditcoin Verification', desc: 'CC3 smart contract verifies cryptographic attestation.' },
-    { num: '04', title: 'Treasury Inscribed', desc: 'Campaign accounting credited on Creditcoin CC3 ledger.' },
+    {
+      num: '02',
+      title: isDemoMode ? 'Attestcoin Proof (Simulated)' : 'Attestcoin Proof Mined',
+      desc: isDemoMode
+        ? 'Inclusion proof payload simulated against Sepolia block header.'
+        : 'Inclusion proof mined against Sepolia block header.',
+    },
+    {
+      num: '03',
+      title: isDemoMode ? 'Creditcoin Verification (Simulated)' : 'Creditcoin Verification',
+      desc: isDemoMode
+        ? 'CC3 smart contract verification flow simulated.'
+        : 'CC3 smart contract verifies cryptographic attestation.',
+    },
+    {
+      num: '04',
+      title: isDemoMode ? 'Campaign Accounting (Simulated)' : 'Campaign Accounting Inscribed',
+      desc: isDemoMode
+        ? 'Campaign accounting credited in simulation mode.'
+        : 'Campaign accounting credited on Creditcoin CC3 ledger.',
+    },
     { num: '05', title: 'Task Routing', desc: 'Aid mission dispatched to active Virtual Responder Node.' },
     { num: '06', title: 'Delivery Proof Signed', desc: 'Responder node signs completion proof with SHA-256 hash.' },
     { num: '07', title: 'Reward Released', desc: 'AidDeliveryEscrow dispatches bounded testnet incentive.' },
@@ -65,7 +89,7 @@ export default function OverviewPage() {
               <div className="flex flex-wrap items-center gap-2 mb-1.5">
                 <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse"></span>
                 <span className="text-xs uppercase tracking-wider text-teal-800 font-bold">
-                  LIVE PROTOCOL TELEMETRY
+                  {isDemoMode ? 'SIMULATED PROTOCOL TELEMETRY' : 'LIVE PROTOCOL TELEMETRY'}
                 </span>
                 <span className="text-xs text-slate-400 font-mono">| Synced to Block #1,482,904</span>
                 <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
@@ -160,7 +184,9 @@ export default function OverviewPage() {
         {/* 5 Core Telemetry Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
-            <span className="text-xs text-slate-500 font-medium">TOTAL VERIFIED FLOW</span>
+            <span className="text-xs text-slate-500 font-medium">
+              {isDemoMode ? 'TOTAL SIMULATED FLOW' : 'TOTAL VERIFIED FLOW'}
+            </span>
             <div className="my-2">
               <div className="text-2xl font-bold font-mono text-slate-900">320 tCTC</div>
               <span className="text-[11px] text-teal-700 font-semibold flex items-center gap-0.5">
@@ -168,7 +194,9 @@ export default function OverviewPage() {
                 14 Donors Verified
               </span>
             </div>
-            <span className="text-[10px] text-slate-400">Sepolia → CC3 Attested</span>
+            <span className="text-[10px] text-slate-400">
+              {isDemoMode ? 'Sepolia → CC3 Simulated' : 'Sepolia → CC3 Attested'}
+            </span>
           </div>
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
@@ -252,7 +280,9 @@ export default function OverviewPage() {
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Verified Aid Coordination Lifecycle</h2>
+              <h2 className="text-lg font-bold text-slate-900">
+                {isDemoMode ? 'Aid Coordination Lifecycle (Simulated Flow)' : 'Verified Aid Coordination Lifecycle'}
+              </h2>
               <p className="text-xs text-slate-500">
                 End-to-end deterministic progression from Ethereum Sepolia donation to field node reward release.
               </p>

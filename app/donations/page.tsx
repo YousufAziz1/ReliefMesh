@@ -261,7 +261,7 @@ export default function DonationsPage() {
                   ...s,
                   status: 'ACTIVE',
                   timestamp: 'Syncing',
-                  detail: `Block #${minedBlockNumber} confirmed on Sepolia! Creditcoin CC3 consensus oracle batches update periodically (~2-5 minutes). Click 'Check CC3 Attestation' anytime to continue checking!`,
+                  detail: `Block #${minedBlockNumber} confirmed on Sepolia! Attestation time depends on source-chain finality and current testnet prover state. Click 'Check CC3 Attestation' anytime to continue checking!`,
                 }
               : s
           )
@@ -686,7 +686,7 @@ export default function DonationsPage() {
                 Hackathon Judge Fast-Track Demonstration
               </div>
               <p className="text-[11px] text-slate-300">
-                Live testnet attestation batches ingest every 2–5 minutes. To inspect an instant verified CC3 transaction with precompile proof verification and replay defense:
+                Attestation time depends on source-chain finality and the current testnet prover state. To inspect an instant verified CC3 transaction with precompile proof verification and replay defense:
               </p>
             </div>
           </div>

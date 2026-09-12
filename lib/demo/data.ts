@@ -166,21 +166,21 @@ export const INITIAL_ACTIVITIES: ProtocolActivity[] = [
     id: "ACT-01",
     type: "DONATION_VERIFIED",
     title: "Donation Verified on Creditcoin CC3",
-    description: "50.00 tCTC cross-chain attestation confirmed via Attestcoin inclusion proof.",
+    description: "Cross-chain attestation confirmed on CC3 via Attestcoin inclusion proof.",
     timestamp: "4 mins ago",
-    wallet: "0x71C8...4f92",
-    txHash: "0x9812...c4e1",
-    amount: "+50.00 tCTC",
+    wallet: "0x936c...FAeF",
+    txHash: "0x8dd0...98e3",
+    amount: "+0.0001 ETH (Sepolia)",
     status: "SUCCESS"
   },
   {
     id: "ACT-02",
     type: "PROOF_GENERATED",
     title: "Attestcoin Inclusion Proof Mined",
-    description: "Merkle inclusion proof verified for Ethereum Sepolia block #6,841,209.",
+    description: "Merkle inclusion proof verified for Ethereum Sepolia block #11,684,082.",
     timestamp: "6 mins ago",
-    wallet: "0xAttest...Oracle",
-    txHash: "0x4fe1...921b",
+    wallet: "0xPrecompile...0FD2",
+    txHash: "0xbc2b...e2c4",
     status: "SUCCESS"
   },
   {
@@ -197,11 +197,11 @@ export const INITIAL_ACTIVITIES: ProtocolActivity[] = [
     id: "ACT-04",
     type: "REWARD_RELEASED",
     title: "Escrow Milestone Reward Dispatched",
-    description: "48.00 tCTC released from AidDeliveryEscrow to Node Alpha.",
+    description: "Testnet reward released from AidDeliveryEscrow to Node Alpha.",
     timestamp: "12 mins ago",
     wallet: "0xEscrow...Vault",
     txHash: "0x33b1...77a8",
-    amount: "+48.00 tCTC",
+    amount: "Testnet Units Released",
     status: "SUCCESS"
   },
   {
@@ -220,15 +220,15 @@ export const INITIAL_PROOFS: CrossChainProof[] = [
   {
     proofId: "PRF-SEPOLIA-CC3-001",
     sourceChain: "Ethereum Sepolia",
-    sourceTxHash: "0x4f82a938c1192837482937461928374619283746192837461928374619283746",
-    sourceBlock: 6841209,
-    donor: "0x71C8391264b19283746192837461928374614f92",
-    amount: "50.00 tCTC equivalent",
-    attestcoinOracle: "0xGluwaAttestcoinOraclePrecompileCC3_000001",
-    merkleRoot: "0x981247b912c48192837461928374619283746192837461928374619283746192",
+    sourceTxHash: "0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4",
+    sourceBlock: 11684082,
+    donor: "0x936cBfC816Cfa2301cEB69aa7Cc6A9B38710FAeF",
+    amount: "0.0001 ETH (Sepolia)",
+    attestcoinOracle: "0x0000000000000000000000000000000000000FD2",
+    merkleRoot: "0x94b94d6d7cee8f80543dc043fb217bcc786f1084d582e645f68dfde464619679",
     destinationChain: "Creditcoin CC3 Testnet",
-    destinationTxHash: "0xcc39182736481928374619283746192837461928374619283746192837461928",
-    timestamp: "2026-09-11 22:45:10 UTC",
+    destinationTxHash: "0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3",
+    timestamp: "2026-09-12 18:02:14 UTC",
     verified: true
   }
 ];

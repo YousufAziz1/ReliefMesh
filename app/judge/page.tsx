@@ -188,11 +188,11 @@ const REAL_EVIDENCE_STEPS: DemoStep[] = [
     description:
       'When re-submitting the identical source transaction hash 0xbc2be..., the contract immediately halts execution and reverts on-chain.',
     technicalDetails:
-      'AttestcoinDonationVerifier.sol line 96 checks verifiedTransactions[sourceTxHash]. Reverts with exact string: "AttestcoinVerifier: duplicate source transaction".',
+      'AttestcoinDonationVerifier.sol checks verifiedTransactions[sourceTxHash]. The campaign registry rejects duplicate source transactions through its replay-protection check.',
     revertTestable: true,
     evidence: [
       { label: 'Replay Test Hash', value: '0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4', isHash: true },
-      { label: 'Smart Contract Revert String', value: 'AttestcoinVerifier: duplicate source transaction' },
+      { label: 'Smart Contract Revert Protection', value: 'Rejects duplicate source transactions through replay-protection check' },
       { label: 'Event Emitted on Block', value: 'DuplicateDonationRejected(sourceTxHash, submitter)' },
       { label: 'Treasury Balance Impact', value: '0 mutated (Replay defense 100% effective)' },
     ],
@@ -664,7 +664,7 @@ No real humanitarian funds or physical delivery are represented`;
                 </span>
               </div>
               <p className="text-xs text-slate-600 mb-2 leading-relaxed">
-                The same source transaction cannot be counted twice by the campaign registry. Reverts on replay: &quot;AttestcoinVerifier: duplicate source transaction&quot;.
+                The campaign registry rejects duplicate source transactions through its replay-protection check.
               </p>
               <button
                 onClick={handleTestReplayRejection}
