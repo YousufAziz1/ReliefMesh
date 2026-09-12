@@ -469,7 +469,7 @@ export default function JudgePage() {
               90-Second Hackathon Judge Flow
             </h1>
             <p className="text-xs text-slate-500 mt-0.5">
-              Guided end-to-end cryptographic demonstration of the ReliefMesh protocol: Ethereum Sepolia deposit → Gluwa USC proof → CC3 native precompile verification → campaign accounting.
+              Guided end-to-end cryptographic workflow demonstration of the ReliefMesh protocol: Ethereum Sepolia deposit → Gluwa USC proof flow → CC3 native precompile verification → campaign accounting. The default presentation uses simulated proof states because the hosted prover endpoint is not configured.
             </p>
           </div>
 

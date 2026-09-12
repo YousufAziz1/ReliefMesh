@@ -37,8 +37,8 @@ Over $30 billion is donated annually to international humanitarian relief, but c
 ### The ReliefMesh Solution
 ReliefMesh replaces custodial bridges with zero-custodian cryptographic proofs:
 - **Direct Source Ingestion**: Donors deposit on Ethereum Sepolia directly into a designated vault.
-- **Attestcoin Inclusion Proofs**: Attestcoin verifies that the source transaction occurred on Sepolia without taking custody of funds.
-- **Creditcoin Settlement**: Creditcoin CC3 contracts execute precompile verification, inscribe the attestation, increment campaign accounting, and enforce strict single-use replay protection.
+- **Attestcoin Proof Flow**: ReliefMesh implements the Attestcoin proof-generation and verification flow. In the current public presentation environment, the hosted prover endpoint is not configured, so proof verification is shown as simulation data.
+- **Creditcoin Settlement**: Creditcoin CC3 contracts are designed to verify the proof, inscribe the attestation, increment campaign accounting, and enforce strict single-use replay protection. In the default presentation mode, campaign accounting is simulated.
 
 ---
 
@@ -48,7 +48,7 @@ ReliefMesh replaces custodial bridges with zero-custodian cryptographic proofs:
 
 Unlike custodial bridges or off-chain oracles that can be manipulated or compromised, Attestcoin delivers:
 1. **Zero Asset Custody**: Assets remain on the source chain; only inclusion proofs cross the boundary.
-2. **Precompile Verification**: Creditcoin CC3 verifies the Merkle branch at the EVM precompile level (`0x...FD2`), backed by Substrate host consensus.
+2. **Precompile Verification**: `PrecompileBlockProver.verifySingle()` is the intended Creditcoin verification method. The current public CLI run does not execute it because the hosted prover returned HTTP 404; the presentation flow therefore labels this step as simulated.
 3. **Deterministic Replay Guards**: The `AttestcoinDonationVerifier` contract persists verified transaction hashes, rejecting duplicate submissions on-chain.
 
 ---
@@ -87,31 +87,32 @@ In the UI, every data point carries a precise source badge:
 
 ```
 [ Donor on Ethereum Sepolia ]
-             │  (Transfers 0.0001 ETH)
-             ▼
-[ Sepolia Block #11,684,082 ] ─────── Tx: 0xbc2be563...89e2c4
              │
-             │ (Block inclusion observed by Gluwa USC / Attestcoin consensus)
+             │ Real public testnet transaction
              ▼
-[ Attestcoin Consensus & Prover Service ]
-             │  • State Root: 0x94b94d6d...9679
-             │  • 7 Merkle Siblings & 9 Continuity Roots
+[ Sepolia Block #11,684,082 ]
+             │
+             │ Attestation status available
              ▼
-[ Creditcoin CC3 Native Precompile: 0x...FD2 ]
-             │  (PrecompileBlockProver.verifySingle() returns true)
+[ Attestcoin / USC Prover Service ]
+             │
+             │ Live proof generation:
+             │ NOT_CONFIGURED in current public environment
              ▼
-[ AttestcoinDonationVerifier.sol ] (CC3: 0x2C5334...)
-             │  • Checks verifiedTransactions[sourceTxHash] (Replay Guard)
-             │  • Emits DonationCredited event
+[ Creditcoin CC3 Verification Flow ]
+             │
+             │ Precompile verification:
+             │ Simulated in presentation mode
              ▼
-[ ReliefCampaign.sol ] (CC3: 0x995fa0...)
-             │  • Credits testnet campaign accounting units
+[ ReliefMesh Contracts ]
+             │
+             │ Campaign accounting:
+             │ Simulated unless live proof succeeds
              ▼
-[ AidDeliveryEscrow.sol ] (CC3: 0xE84d28...)
-             │  • Releases testnet task rewards upon verified delivery proof
-             ▼
-[ ImpactLens Read-Only Auditor ]
-                (Deterministic analysis & parity checks; zero financial control)
+[ Virtual Responder Nodes + ImpactLens ]
+             │
+             │ Virtual/testnet coordination and
+             │ read-only deterministic analysis
 ```
 
 ---
@@ -120,7 +121,7 @@ In the UI, every data point carries a precise source badge:
 
 ReliefMesh links a verified source donation on Ethereum Sepolia to a contract interaction on Creditcoin CC3 Testnet:
 
-| Field | Source Chain Evidence | Destination Chain Settlement |
+| Field | Source Chain Evidence | Destination Chain Reference |
 | :--- | :--- | :--- |
 | **Network & Chain ID** | Ethereum Sepolia (`11155111`) | Creditcoin CC3 Testnet (`102031`) |
 | **Transaction Hash** | [`0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4`](https://sepolia.etherscan.io/tx/0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4) | [`0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3`](https://creditcoin-testnet.blockscout.com/tx/0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3) |
@@ -237,10 +238,10 @@ Public evidence metadata is also preserved in [`docs/evidence-record.json`](./do
 
 A robust verification system must prove how it handles invalid and malicious inputs. ReliefMesh includes an interactive failure demo both in the `/judge` UI and in smart contract tests:
 
-### 1. Valid Proof Path (Happy Path)
+### 1. Valid Proof Path (Design & Presentation Flow)
 1. Donor deposits `0.0001 ETH` on Sepolia (`tx: 0xbc2be...`).
-2. Inclusion proof is generated and verified by Precompile `0x...FD2`.
-3. Destination contract records the deposit and registers `verifiedTransactions[sourceTxHash] = true`.
+2. Inclusion proof is generated and verified by Precompile `0x...FD2` (or presented via simulation fixture).
+3. `ReliefCampaign.sol` is designed to credit testnet campaign accounting units only after successful proof verification. In the default presentation mode, campaign accounting is simulated, and `verifiedTransactions[sourceTxHash] = true` is registered.
 
 ### 2. Duplicate Replay Rejection Path (Failure Path)
 1. An attacker attempts to re-submit the identical source transaction hash `0xbc2be...` to claim additional relief accounting units.

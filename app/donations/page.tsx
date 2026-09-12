@@ -1041,7 +1041,19 @@ export default function DonationsPage() {
                               : 'bg-slate-100 text-slate-500'
                           }`}
                         >
-                          {step.status === 'NOT_CONFIGURED' ? 'NOT CONFIGURED' : step.status}
+                          {isDemoMode
+                            ? step.status === 'NOT_CONFIGURED'
+                              ? 'NOT CONFIGURED'
+                              : step.status === 'PENDING'
+                              ? step.id <= 3
+                                ? 'SIMULATED PENDING'
+                                : 'SIMULATED'
+                              : step.status === 'COMPLETED'
+                              ? 'SIMULATED'
+                              : `SIMULATED ${step.status}`
+                            : step.status === 'NOT_CONFIGURED'
+                            ? 'NOT CONFIGURED'
+                            : step.status}
                         </span>
                       </div>
                       <p className="text-[11px] text-slate-500 mt-0.5">{step.subtitle}</p>
