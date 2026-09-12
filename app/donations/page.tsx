@@ -200,7 +200,45 @@ export default function DonationsPage() {
         status: 'GENERATING',
       });
 
-      if (verificationResult.status === 'NOT_CONFIGURED') {
+      let finalResult = verificationResult;
+      let attempt = 0;
+
+      // Auto-poll if block attestation is pending on Creditcoin CC3 (up to 15 attempts, ~3 minutes)
+      while (finalResult.status === 'PENDING' && attempt < 15) {
+        attempt++;
+        setPipelineSteps((prev) =>
+          prev.map((s) =>
+            s.id === 3
+              ? {
+                  ...s,
+                  status: 'ACTIVE',
+                  timestamp: `Attesting (${attempt}/15)...`,
+                  detail: `Waiting for Creditcoin CC3 consensus attestation epoch (attempt ${attempt}/15, checking every 10s)...`,
+                }
+              : s.id >= 4
+              ? {
+                  ...s,
+                  status: 'PENDING',
+                  detail: 'Awaiting block attestation on Creditcoin CC3.',
+                }
+              : s
+          )
+        );
+
+        await new Promise((r) => setTimeout(r, 10000));
+
+        finalResult = await verifyDonationWithAttestcoin({
+          sourceChain: 'Ethereum Sepolia',
+          sourceTxHash: txHash,
+          sourceBlockNumber: minedBlock,
+          donor: address,
+          amount: amount,
+          campaignId: 1,
+          status: 'GENERATING',
+        });
+      }
+
+      if (finalResult.status === 'NOT_CONFIGURED') {
         // Truthful NOT_CONFIGURED state
         setPipelineSteps((prev) =>
           prev.map((s) =>
@@ -209,7 +247,7 @@ export default function DonationsPage() {
                   ...s,
                   status: 'NOT_CONFIGURED',
                   timestamp: 'Halted',
-                  detail: verificationResult.blockerReason || 'Gluwa BlockProver not configured in server environment.',
+                  detail: finalResult.blockerReason || 'Gluwa BlockProver not configured in server environment.',
                 }
               : s.id >= 5
               ? {
@@ -227,33 +265,27 @@ export default function DonationsPage() {
         return;
       }
 
-      if (verificationResult.status === 'PENDING') {
+      if (finalResult.status === 'PENDING') {
         setPipelineSteps((prev) =>
           prev.map((s) =>
             s.id === 3
               ? {
                   ...s,
                   status: 'ACTIVE',
-                  timestamp: 'Attesting',
-                  detail: verificationResult.blockerReason || 'Waiting for Creditcoin CC3 consensus attestation (~1-3 mins)...',
-                }
-              : s.id >= 4
-              ? {
-                  ...s,
-                  status: 'PENDING',
-                  detail: 'Awaiting block attestation on Creditcoin CC3.',
+                  timestamp: 'Syncing',
+                  detail: 'Block mined on Sepolia! CC3 attestation is still processing this batch. You can refresh to check again.',
                 }
               : s
           )
         );
         setIsProcessing(false);
         setSuccessMessage(
-          `SEPOLIA TRANSACTION MINED! Block #${minedBlock} confirmed. Creditcoin CC3 attestation is syncing this block. You can also view the already-attested completed flow anytime in Judge Mode (/judge).`
+          `SEPOLIA CONFIRMED! Block #${minedBlock} confirmed. CC3 attestation will include this block shortly. You can also review the verified flow anytime in Judge Mode (/judge).`
         );
         return;
       }
 
-      if (verificationResult.status === 'FAILED') {
+      if (finalResult.status === 'FAILED') {
         setPipelineSteps((prev) =>
           prev.map((s) =>
             s.id >= 3
@@ -261,13 +293,13 @@ export default function DonationsPage() {
                   ...s,
                   status: 'ERROR',
                   timestamp: 'Failed',
-                  detail: verificationResult.blockerReason || 'Verification rejected.',
+                  detail: finalResult.blockerReason || 'Verification rejected.',
                 }
               : s
           )
         );
         setIsProcessing(false);
-        setErrorMessage(`VERIFICATION FAILED: ${verificationResult.blockerReason}`);
+        setErrorMessage(`VERIFICATION FAILED: ${finalResult.blockerReason}`);
         return;
       }
 
@@ -292,11 +324,11 @@ export default function DonationsPage() {
             ? {
                 ...s,
                 status: 'COMPLETED',
-                hash: verificationResult.destinationTxHash,
+                hash: finalResult.destinationTxHash,
                 timestamp: 'Just now',
                 detail: 'AttestcoinDonationVerifier validated signature on Creditcoin CC3.',
-                explorerUrl: verificationResult.destinationTxHash
-                  ? `https://creditcoin-testnet.subscan.io/tx/${verificationResult.destinationTxHash}`
+                explorerUrl: finalResult.destinationTxHash
+                  ? `https://creditcoin-testnet.subscan.io/tx/${finalResult.destinationTxHash}`
                   : undefined,
               }
             : s.id === 6
