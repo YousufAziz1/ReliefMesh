@@ -686,7 +686,9 @@ export default function DonationsPage() {
                 Hackathon Judge Fast-Track Demonstration
               </div>
               <p className="text-[11px] text-slate-300">
-                Attestation time depends on source-chain finality and the current testnet prover state. To inspect an instant verified CC3 transaction with precompile proof verification and replay defense:
+                {isDemoMode
+                  ? 'Attestation time depends on source-chain finality and the current testnet prover state. To inspect the simulated CC3 verification flow and replay-defense presentation:'
+                  : 'Attestation time depends on source-chain finality and the current testnet prover state. To inspect an instant verified CC3 transaction with precompile proof verification and replay defense:'}
               </p>
             </div>
           </div>
