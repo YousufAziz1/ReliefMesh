@@ -22,7 +22,7 @@ Judges evaluate dozens of projects. The 90-second path gets directly to the core
 | **1:18 – 1:30** (12s) | **Step 08: ImpactLens** | Step 08 card & parity audit | *"ImpactLens provides a read-only deterministic audit with zero financial authority. ReliefMesh demonstrates how source-chain evidence, Attestcoin proof flow and Creditcoin-side accounting can work together. This is a testnet prototype, not a live humanitarian fund or physical delivery system. Thank you!"* |
 
 > **🌟 Best Pitch Positioning for Evaluators:**  
-> *"ReliefMesh is a testnet prototype for proof-backed cross-chain aid coordination. It combines real public testnet transaction references with an explicit simulation/live separation and demonstrates how Attestcoin proof flow, Creditcoin accounting and replay protection can work together."*
+> *"ReliefMesh is a testnet prototype that presents a verified Ethereum Sepolia transaction reference alongside Creditcoin contract infrastructure, with explicit simulation/live separation. It demonstrates how Attestcoin proof flow, Creditcoin accounting and replay protection can work together once the prover is configured."*
 
 ---
 

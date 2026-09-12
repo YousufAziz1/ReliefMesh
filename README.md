@@ -19,7 +19,7 @@
 **ReliefMesh** is a testnet prototype for proof-backed cross-chain aid coordination. Ethereum Sepolia provides source-chain evidence, Attestcoin provides the cryptographic proof flow, and Creditcoin contracts enforce campaign accounting and duplicate protection. Virtual responder nodes and ImpactLens demonstrate coordination and audit UX without claiming real-world humanitarian delivery.
 
 - **Source Chain**: Ethereum Sepolia (`11155111`) — Confirmed donation transaction (`0xbc2be...e2c4`, Block `#11684082`, `0.0001 ETH`).
-- **Attestation & Prover**: Gluwa USC / Attestcoin proof flow is implemented. The current public prover endpoint is not configured, so the proof payload is shown only in simulation mode. *(Simulation fixture metadata: 7 Merkle siblings, 9 continuity roots, Precompile `0x0000000000000000000000000000000000000FD2`)*.
+- **Attestation & Prover**: Gluwa USC / Attestcoin proof flow is implemented. The current public prover endpoint is not configured, so the proof payload is shown only in simulation mode. *(Simulation-only fixture metadata: 7 Merkle siblings and 9 continuity roots. These values are not a live prover response; Precompile `0x0000000000000000000000000000000000000FD2`)*.
 - **Destination Chain**: Creditcoin CC3 Testnet (`102031`) — Confirmed contract interaction (`0x8dd07...98e3`, Block `#5476394`).
 - **Accounting Isolation**: Source donation is recorded as ETH. Creditcoin campaign accounting tracks testnet relief units upon verification. No 1:1 cross-chain currency conversion is assumed or implied.
 - **Judge Route**: Interactive evaluation console at `/judge` with both real testnet evidence and offline simulation modes.
@@ -120,7 +120,7 @@ In the UI, every data point carries a precise source badge:
 
 ## 🔍 Exact Live Verification Flow & Public Evidence Linkage
 
-ReliefMesh links a verified source donation on Ethereum Sepolia to a contract interaction on Creditcoin CC3 Testnet:
+ReliefMesh presents a verified Ethereum Sepolia source transaction reference alongside a separate Creditcoin CC3 testnet contract interaction. The current public receipt does not yet prove source-to-destination event linkage:
 
 | Field | Source Chain Evidence | Destination Chain Reference |
 | :--- | :--- | :--- |
@@ -131,7 +131,7 @@ ReliefMesh links a verified source donation on Ethereum Sepolia to a contract in
 | **Interacted Contract** | `0x71C8391264b192837461928374614f9283746192` (Sepolia Vault) | `0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2` (`AttestcoinDonationVerifier`) |
 | **Method Selector** | Direct Transfer / Deposit | `0xcf0c7f18` (Contract interaction observed on CC3) |
 | **Event Linkage** | Confirmed Transfer Event | `NOT VERIFIED IN CURRENT PUBLIC RECEIPT` |
-| **Linkage Evidence Note** | Confirmed on Sepolia RPC | *Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it. Demo association only; live event linkage pending.* |
+| **Linkage Evidence Note** | Confirmed on Sepolia RPC | Sepolia source transaction confirmed by RPC; CC3 contract interaction independently confirmed; source-to-destination linkage pending event verification. |
 
 > **Accounting Isolation Note:** No 1:1 cross-chain currency peg or conversion is assumed or implied. Sepolia records ETH; Creditcoin records testnet relief accounting units upon proof verification.
 
