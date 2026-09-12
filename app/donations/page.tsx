@@ -1057,7 +1057,11 @@ export default function DonationsPage() {
                         </span>
                       </div>
                       <p className="text-[11px] text-slate-500 mt-0.5">
-                        {isDemoMode && step.id === 5
+                        {isDemoMode && step.id === 3
+                          ? 'Simulated Attestcoin attestation state'
+                          : isDemoMode && step.id === 4
+                          ? 'Simulated storage inclusion proof'
+                          : isDemoMode && step.id === 5
                           ? 'Simulated CC3 verification state'
                           : isDemoMode && step.id === 6
                           ? 'Simulated campaign accounting state'
@@ -1066,7 +1070,11 @@ export default function DonationsPage() {
 
                       {step.detail && (
                         <p className="text-[11px] text-slate-600 mt-1.5 pt-1.5 border-t border-slate-200 leading-relaxed">
-                          {isDemoMode && step.id === 5
+                          {isDemoMode && step.id === 3
+                            ? 'Simulated Attestcoin header-attestation state; no live proof is recorded in simulation mode.'
+                            : isDemoMode && step.id === 4
+                            ? 'Offline presentation Merkle proof fixture; live prover endpoint not configured.'
+                            : isDemoMode && step.id === 5
                             ? 'Presentation-only state; no live proof is recorded in simulation mode.'
                             : isDemoMode && step.id === 6
                             ? 'Presentation-only accounting tally; simulated aid pool update.'

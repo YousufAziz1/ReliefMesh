@@ -896,7 +896,7 @@ No real humanitarian funds or physical delivery are represented`;
                 <div className="text-teal-400 font-mono font-bold mb-1">0:25 – 0:50 (25s)</div>
                 <div className="font-bold text-white mb-1">3. ATTESTCOIN &amp; TRUTH SEPARATION</div>
                 <p className="text-slate-300 leading-relaxed">
-                  &quot;The Ethereum Sepolia transaction and Creditcoin contract receipt are publicly verifiable testnet references. The hosted prover endpoint is currently not configured in this presentation environment, so ReliefMesh clearly separates live public references from simulated proof presentation. No unverified data is presented as live cryptographic proof.&quot;
+                  &quot;The Ethereum Sepolia transaction and Creditcoin contract receipt are publicly verifiable testnet references. The hosted prover endpoint is not configured in this presentation environment, so proof metadata and precompile verification are shown as simulation states rather than being presented as live cryptographic proof.&quot;
                 </p>
               </div>
 
