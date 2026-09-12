@@ -31,7 +31,7 @@ export async function analyzeProtocolHealth(
   options?: { apiKey?: string; model?: string }
 ): Promise<ImpactLensReport> {
   const apiKey = options?.apiKey || process.env.AI_API_KEY;
-  const model = options?.model || process.env.AI_MODEL || 'gemini-3.8-flash';
+  const model = options?.model || process.env.AI_MODEL || 'gemini-1.5-flash';
 
   if (apiKey) {
     try {

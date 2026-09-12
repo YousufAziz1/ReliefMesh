@@ -62,18 +62,21 @@ export default function OverviewPage() {
         <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-xs">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-100">
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 mb-1.5">
                 <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse"></span>
                 <span className="text-xs uppercase tracking-wider text-teal-800 font-bold">
                   LIVE PROTOCOL TELEMETRY
                 </span>
                 <span className="text-xs text-slate-400 font-mono">| Synced to Block #1,482,904</span>
+                <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                  TESTNET PROTOTYPE · NO REAL FUNDS · NO REAL EMERGENCY OPERATIONS
+                </span>
               </div>
               <h1 className="text-2xl font-bold text-slate-900 mt-1">
-                Mission-Critical Humanitarian Aid Liquidity Protocol
+                Proof-backed cross-chain aid coordination
               </h1>
-              <p className="text-sm text-slate-500 mt-0.5">
-                Verified cross-chain capital routing from Ethereum Sepolia to Creditcoin CC3 Testnet.
+              <p className="text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
+                ReliefMesh is a testnet prototype for proof-backed cross-chain aid coordination. It demonstrates how Attestcoin can verify source-chain evidence while Creditcoin contracts enforce campaign accounting and duplicate protection.
               </p>
             </div>
 
@@ -245,11 +248,11 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        {/* Autonomous Aid Coordination Lifecycle in 8 Steps */}
+        {/* Verified Aid Coordination Lifecycle in 8 Steps */}
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Autonomous Aid Coordination Lifecycle</h2>
+              <h2 className="text-lg font-bold text-slate-900">Verified Aid Coordination Lifecycle</h2>
               <p className="text-xs text-slate-500">
                 End-to-end deterministic progression from Ethereum Sepolia donation to field node reward release.
               </p>

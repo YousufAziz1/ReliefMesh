@@ -7,7 +7,7 @@
 
 ## 🌍 Overview
 
-**ReliefMesh** is an autonomous cross-chain humanitarian aid coordination protocol connecting **Ethereum Sepolia** and **Creditcoin CC3 Testnet** via **Attestcoin (Gluwa USC)** inclusion proofs.
+**ReliefMesh** is a testnet prototype for proof-backed cross-chain aid coordination connecting **Ethereum Sepolia** and **Creditcoin CC3 Testnet** via **Attestcoin (Gluwa USC)** inclusion proofs. It demonstrates how Attestcoin can verify source-chain evidence while Creditcoin contracts enforce campaign accounting and duplicate protection.
 
 When disasters occur, emergency funding must move with mathematical speed, zero custodial bridge risk, and cryptographic accountability. ReliefMesh delivers:
 
@@ -19,27 +19,29 @@ When disasters occur, emergency funding must move with mathematical speed, zero 
 
 ---
 
-## 🔄 Dual Operating Modes: Demo vs Real Testnet
+## Live integration status
 
-ReliefMesh provides an interactive **Mode Selector** in the persistent header:
+The application has two modes:
 
-```
-[ 🧪 SIMULATION MODE (ACTIVE) ⇄ ]  <-- One-click toggle in header
-```
+### Simulation mode
 
-### 1. DEMO / SIMULATION MODE (`DEMO_MODE=true`)
-- **Purpose**: Built for rapid 3-minute hackathon judging, offline review, and dry-run evaluations without requiring live gas tokens or private API keys.
-- **Features**: Guided 6-step cross-chain progression, 4 interactive test scenarios (`✓ Simulate Success`, `⚠ Duplicate Replay`, `⏳ Proof Pending`, `✕ Gas Reversion`), and an 8-step Judge Mode walkthrough at `/judge`.
-- **Integrity**: Explicitly labeled `SIMULATION ACTIVE` with `isSimulated: true` tags.
+Simulation mode is enabled by default for offline judging. It uses clearly labelled simulated states and never presents them as live on-chain verification.
 
-### 2. REAL TESTNET MODE (`DEMO_MODE=false`)
-- **Purpose**: Live cross-chain interaction with Ethereum Sepolia and Creditcoin CC3 Testnet.
-- **Features**:
-  - Real browser wallet connection (MetaMask/Wagmi) with chain detection, balance, and wrong-network switching.
-  - Real `sendTransaction` broadcasts on Ethereum Sepolia, waiting for block mining and confirmation.
-  - Server-side proof generation via `@gluwa/usc-sdk` (`/api/attestcoin/proof`).
-  - Server-side relayer verification against `AttestcoinDonationVerifier.sol` on Creditcoin CC3 (`/api/creditcoin/verify`).
-  - Strict **Status Truthfulness**: Never fakes `VERIFIED`. If live prover credentials or CC3 gas are missing, the UI truthfully halts at `NOT CONFIGURED` with explicit instructions.
+### Live testnet mode
+
+Live mode requires:
+
+- A funded Creditcoin CC3 relayer wallet
+- A valid Creditcoin RPC endpoint
+- A supported Ethereum Sepolia RPC
+- The current Attestcoin/USC proof-builder endpoint
+- Any authentication credential required by the currently deployed prover service
+
+If the prover service returns an authentication error, the application stops at `NOT CONFIGURED` and does not display `VERIFIED`.
+
+No simulated state is claimed as a real Attestcoin verification.
+
+Live prover integration is implemented but currently requires environment credentials that are not included in this public repository.
 
 ---
 
@@ -98,8 +100,8 @@ cp .env.example .env.local
 | `NEXT_PUBLIC_AID_PACKAGE_ADDRESS` | Public | Deployed `AidPackageRegistry.sol` on CC3 |
 | `NEXT_PUBLIC_DEMO_MODE` | Public | `true` = guided simulation; `false` = live testnet enforcement |
 | `BACKEND_PRIVATE_KEY` | **Server Only** | Relayer account funded with `tCTC` to pay gas on Creditcoin CC3 |
-| `GLUWA_PROVER_API_KEY` | **Server Only** | Authenticated API key for Gluwa USC BlockProver |
-| `SOURCE_ARCHIVE_RPC_URL` | **Server Only** | Archive node on Ethereum Sepolia for raw Merkle proofs |
+| `GLUWA_PROVER_API_KEY` | **Server (Optional)** | Optional authentication key if hosted prover requires credentials (not required for standard public endpoint) |
+| `SOURCE_ARCHIVE_RPC_URL` | **Server (Optional)** | Archive node on Ethereum Sepolia for raw Merkle proofs |
 
 ### 4. Run Development Server
 ```bash
@@ -120,27 +122,40 @@ npm run build
 
 ---
 
-## 📜 Smart Contracts (`contracts/src/`) & Live Testnet Deployments
+## 📜 Deployed Smart Contracts (`contracts/src/`) & Live Testnet Addresses
 
 All 5 core contracts are compiled with Solidity `^0.8.20` and deployed on **Creditcoin CC3 Testnet** (Chain ID: `102031`):
 
-| Contract | Network | Live Address | Deployment Tx |
-|---|---|---|---|
-| **ReliefCampaign** | Creditcoin CC3 | [`0x995fa0F23037E1435dbBb3FDB224eAfe1964d815`](https://creditcoin-testnet.blockscout.com/address/0x995fa0F23037E1435dbBb3FDB224eAfe1964d815) | `0x40c49...` (Block #5470983) |
-| **AttestcoinDonationVerifier** | Creditcoin CC3 | [`0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2`](https://creditcoin-testnet.blockscout.com/address/0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2) | `0x808c0...` (Block #5470984) |
-| **ResponderRegistry** | Creditcoin CC3 | [`0xb43743EAD07BE2A0fECF8Ab5a698Ab8c2f914d47`](https://creditcoin-testnet.blockscout.com/address/0xb43743EAD07BE2A0fECF8Ab5a698Ab8c2f914d47) | `0xdcf0e...` (Block #5470982) |
-| **AidDeliveryEscrow** | Creditcoin CC3 | [`0xE84d28f690117C5b543225EBd7d3afd51131Ff44`](https://creditcoin-testnet.blockscout.com/address/0xE84d28f690117C5b543225EBd7d3afd51131Ff44) | `0xe261c...` (Block #5470986) |
-| **AidPackageRegistry** | Creditcoin CC3 | [`0x7e77382E958b80948928B8e073cC63B6EFB865D2`](https://creditcoin-testnet.blockscout.com/address/0x7e77382E958b80948928B8e073cC63B6EFB865D2) | `0xbaeca...` (Block #5470987) |
+| Contract | Address | Explorer |
+|---|---|---|
+| ReliefCampaign | `0x995fa0F23037E1435dbBb3FDB224eAfe1964d815` | [`creditcoin-testnet.blockscout.com/address/0x995fa0F23037E1435dbBb3FDB224eAfe1964d815`](https://creditcoin-testnet.blockscout.com/address/0x995fa0F23037E1435dbBb3FDB224eAfe1964d815) |
+| AttestcoinDonationVerifier | `0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2` | [`creditcoin-testnet.blockscout.com/address/0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2`](https://creditcoin-testnet.blockscout.com/address/0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2) |
+| ResponderRegistry | `0xb43743EAD07BE2A0fECF8Ab5a698Ab8c2f914d47` | [`creditcoin-testnet.blockscout.com/address/0xb43743EAD07BE2A0fECF8Ab5a698Ab8c2f914d47`](https://creditcoin-testnet.blockscout.com/address/0xb43743EAD07BE2A0fECF8Ab5a698Ab8c2f914d47) |
+| AidDeliveryEscrow | `0xE84d28f690117C5b543225EBd7d3afd51131Ff44` | [`creditcoin-testnet.blockscout.com/address/0xE84d28f690117C5b543225EBd7d3afd51131Ff44`](https://creditcoin-testnet.blockscout.com/address/0xE84d28f690117C5b543225EBd7d3afd51131Ff44) |
+| AidPackageRegistry | `0x7e77382E958b80948928B8e073cC63B6EFB865D2` | [`creditcoin-testnet.blockscout.com/address/0x7e77382E958b80948928B8e073cC63B6EFB865D2`](https://creditcoin-testnet.blockscout.com/address/0x7e77382E958b80948928B8e073cC63B6EFB865D2) |
+
+### Deployment Transactions (Creditcoin CC3 Testnet)
+
+| Contract | Deployment Tx Hash | Block Height |
+|---|---|---|
+| ReliefCampaign | [`0x40c49b7acdc2515626dd15ff39b6d85caed1a179c8ff85ccd5edfa0c34559762`](https://creditcoin-testnet.blockscout.com/tx/0x40c49b7acdc2515626dd15ff39b6d85caed1a179c8ff85ccd5edfa0c34559762) | `#5470983` |
+| AttestcoinDonationVerifier | [`0x808c05e398cbc3f91f9e0d2113b54ea0908d13ec00060ef56e2def111e4edb6b`](https://creditcoin-testnet.blockscout.com/tx/0x808c05e398cbc3f91f9e0d2113b54ea0908d13ec00060ef56e2def111e4edb6b) | `#5470984` |
+| ResponderRegistry | [`0xdcf0e1522addb37438409f707386eb929369be69d9e73a333b57fd9c08babc0b`](https://creditcoin-testnet.blockscout.com/tx/0xdcf0e1522addb37438409f707386eb929369be69d9e73a333b57fd9c08babc0b) | `#5470982` |
+| AidDeliveryEscrow | [`0xe261c0eb7106801b8017bf9415940cded64a87eb7e6fca9ee3a2197badb3a00c`](https://creditcoin-testnet.blockscout.com/tx/0xe261c0eb7106801b8017bf9415940cded64a87eb7e6fca9ee3a2197badb3a00c) | `#5470986` |
+| AidPackageRegistry | [`0xbaecaf719fb082ad25690b199e0e54bcd5cd620c283afa711a17ea083e9647d0`](https://creditcoin-testnet.blockscout.com/tx/0xbaecaf719fb082ad25690b199e0e54bcd5cd620c283afa711a17ea083e9647d0) | `#5470987` |
 
 ---
 
 ## 🏆 Verified End-to-End Testnet Proof Reference
 
 - **Sepolia Source Transaction**: [`0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4`](https://sepolia.etherscan.io/tx/0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4) (Block `#11684082`, `0.0001 ETH`)
-- **Creditcoin CC3 Inscription**: [`0x2fa48b69646672381fc1288d95ff96a92c2d39869bb1911c4dd2f158d7f8b75e`](https://creditcoin-testnet.blockscout.com/tx/0x2fa48b69646672381fc1288d95ff96a92c2d39869bb1911c4dd2f158d7f8b75e) (Block `#5471033`)
+- **Creditcoin CC3 Inscription**: [`0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3`](https://creditcoin-testnet.blockscout.com/tx/0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3) (Block `#5476394`)
+- **Creditcoin Verification Result**: Confirmed on CC3 block `#5476394` via `AttestcoinDonationVerifier.sol` (available in the live application when the configured relayer and prover are active).
+- **Asset Accounting Separation**: Source-chain evidence is `0.0001 ETH on Ethereum Sepolia`. Creditcoin campaign accounting records testnet units upon successful proof verification. No ETH-to-tCTC conversion is assumed or implied.
 - **CC3 Native Precompile**: `0x0000000000000000000000000000000000000FD2` (`PrecompileBlockProver`)
 - **Official CC3 Prover**: `https://prover.cc3-testnet.creditcoin.network/`
 - **Replay Protection**: Verified on-chain (`AttestcoinVerifier: duplicate source transaction`)
+- **ImpactLens Engine**: Read-only deterministic audit engine with optional AI explanation layer (no transaction authority).
 - **Interactive 3-Minute Judge Mode**: Route `/judge` with rehearsal script in [`DEMO_REHEARSAL.md`](./DEMO_REHEARSAL.md)
 
 ---

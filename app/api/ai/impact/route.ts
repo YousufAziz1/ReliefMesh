@@ -9,7 +9,7 @@ export const runtime = 'nodejs';
 
 function getServerAiCredentials(): { apiKey?: string; model: string } {
   let apiKey = process.env.AI_API_KEY;
-  let model = process.env.AI_MODEL || 'gemini-3.8-flash';
+  let model = process.env.AI_MODEL || 'gemini-1.5-flash';
 
   if (!apiKey) {
     try {
@@ -34,8 +34,8 @@ function getServerAiCredentials(): { apiKey?: string; model: string } {
 
 /**
  * @file app/api/ai/impact/route.ts
- * @notice ImpactLens Gemini AI Oracle API Route
- * @dev Secure server-side execution of Gemini 3.8 Flash analytical audit.
+ * @notice ImpactLens Deterministic Audit & AI Oracle API Route
+ * @dev Read-only execution of deterministic rules with optional AI explanation layer.
  */
 export async function POST(req: NextRequest) {
   try {

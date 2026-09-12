@@ -120,9 +120,9 @@ async function runPreflight() {
     }
   }
 
-  // 6. AI Oracle (Gemini 3.8 Flash) Connectivity Check
+  // 6. AI Oracle (ImpactLens Gemini) Connectivity Check
   const aiKey = env.AI_API_KEY;
-  const aiModel = env.AI_MODEL || 'gemini-3.8-flash';
+  const aiModel = env.AI_MODEL || 'gemini-1.5-flash';
   results.aiOracleStatus = aiKey ? 'CONFIGURED' : 'MISSING';
   results.aiModel = aiModel;
   if (aiKey) {
