@@ -30,7 +30,7 @@ export default function DonationsPage() {
   const { address, isConnected } = useAccount();
   const { connectors, connect } = useConnect();
   const chainId = useChainId();
-  const { switchChain } = useSwitchChain();
+  const { switchChain, switchChainAsync } = useSwitchChain();
   const { data: balanceData } = useBalance({ address });
   const { sendTransactionAsync } = useSendTransaction();
 
@@ -130,10 +130,20 @@ export default function DonationsPage() {
         )
       );
 
+      // Enforce network is strictly Sepolia before sending
+      if (chainId !== sepolia.id) {
+        if (switchChainAsync) {
+          await switchChainAsync({ chainId: sepolia.id });
+        } else {
+          switchChain({ chainId: sepolia.id });
+        }
+      }
+
       const parsedValue = parseEther(amount || '0.001');
       const txHash = await sendTransactionAsync({
         to: PROTOCOL_CONFIG.sepoliaVaultAddress,
         value: parsedValue,
+        chainId: sepolia.id, // STRICTLY ENFORCE SEPOLIA (11155111) TO PREVENT MAINNET ROUTING
       });
 
       // Step 1 Completed with real tx hash
