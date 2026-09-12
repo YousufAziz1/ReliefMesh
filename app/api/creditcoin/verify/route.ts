@@ -43,21 +43,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const relayerKey = process.env.BACKEND_PRIVATE_KEY;
+    const rawKey = process.env.BACKEND_PRIVATE_KEY?.trim() || '';
+    const relayerKey = rawKey.startsWith('0x') ? rawKey : `0x${rawKey}`;
     const creditcoinRpc =
       process.env.NEXT_PUBLIC_CREDITCOIN_RPC_URL || 'https://rpc.cc3-testnet.creditcoin.network';
     const verifierAddress =
       process.env.NEXT_PUBLIC_ATTESTCOIN_VERIFIER_ADDRESS || PROTOCOL_CONFIG.contracts.attestcoinVerifier;
 
-    // Truthfully report NOT_CONFIGURED when live relayer key or contract address is absent
-    if (!relayerKey) {
+    // Truthfully report NOT_CONFIGURED when live relayer key or contract address is absent or invalid
+    if (!rawKey || relayerKey.length !== 66 || relayerKey === '0xtrue' || !/^0x[0-9a-fA-F]{64}$/.test(relayerKey)) {
       return NextResponse.json({
         status: 'NOT_CONFIGURED',
         sourceTxHash,
         error:
-          'Creditcoin CC3 verification relayer not configured: BACKEND_PRIVATE_KEY is missing from server environment.',
+          'Creditcoin CC3 verification relayer not configured: BACKEND_PRIVATE_KEY is missing or invalid in Vercel environment variables.',
         details:
-          'Submitting an on-chain verification transaction to Creditcoin CC3 requires a funded relayer account with tCTC testnet tokens. Please add BACKEND_PRIVATE_KEY to .env.local or switch to Demo Simulation Mode.',
+          'Please configure BACKEND_PRIVATE_KEY in Vercel Dashboard (Project Settings > Environment Variables) with a valid 64-character private key hex string.',
         requiredEnv: ['BACKEND_PRIVATE_KEY', 'NEXT_PUBLIC_CREDITCOIN_RPC_URL'],
       });
     }

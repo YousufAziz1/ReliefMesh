@@ -227,6 +227,32 @@ export default function DonationsPage() {
         return;
       }
 
+      if (verificationResult.status === 'PENDING') {
+        setPipelineSteps((prev) =>
+          prev.map((s) =>
+            s.id === 3
+              ? {
+                  ...s,
+                  status: 'ACTIVE',
+                  timestamp: 'Attesting',
+                  detail: verificationResult.blockerReason || 'Waiting for Creditcoin CC3 consensus attestation (~1-3 mins)...',
+                }
+              : s.id >= 4
+              ? {
+                  ...s,
+                  status: 'PENDING',
+                  detail: 'Awaiting block attestation on Creditcoin CC3.',
+                }
+              : s
+          )
+        );
+        setIsProcessing(false);
+        setSuccessMessage(
+          `SEPOLIA TRANSACTION MINED! Block #${minedBlock} confirmed. Creditcoin CC3 attestation is syncing this block. You can also view the already-attested completed flow anytime in Judge Mode (/judge).`
+        );
+        return;
+      }
+
       if (verificationResult.status === 'FAILED') {
         setPipelineSteps((prev) =>
           prev.map((s) =>

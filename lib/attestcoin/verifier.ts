@@ -69,6 +69,19 @@ export async function verifyDonationWithAttestcoin(
       };
     }
 
+    if (proofData.status === 'PENDING') {
+      return {
+        success: false,
+        status: 'PENDING',
+        sourceTxHash: payload.sourceTxHash,
+        timestamp,
+        isSimulated: false,
+        blockerReason:
+          proofData.detail ||
+          `Sepolia block #${payload.sourceBlockNumber} is confirmed on Sepolia! Creditcoin CC3 consensus attestation takes ~1-3 minutes to ingest new block batches. Once attested, proof generation and CC3 verification can proceed.`,
+      };
+    }
+
     if (proofData.status === 'FAILED') {
       return {
         success: false,
