@@ -11,6 +11,23 @@ const VERIFIER_ABI = [
   'event DuplicateDonationRejected(bytes32 indexed sourceTxHash, address indexed submitter)',
 ];
 
+const VERIFIER_CONTRACT_ADDRESS = '0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2';
+const CAMPAIGN_CONTRACT_ADDRESS = '0x995fa0F23037E1435dbBb3FDB224eAfe1964d815';
+
+function resolveVerifierAddress(rawAddress?: string): string {
+  if (!rawAddress) return VERIFIER_CONTRACT_ADDRESS;
+  try {
+    const checksummed = ethers.getAddress(rawAddress.toLowerCase());
+    // Auto-correct if user accidentally configured campaign address for verifier in Vercel
+    if (checksummed.toLowerCase() === CAMPAIGN_CONTRACT_ADDRESS.toLowerCase()) {
+      return VERIFIER_CONTRACT_ADDRESS;
+    }
+    return checksummed;
+  } catch {
+    return VERIFIER_CONTRACT_ADDRESS;
+  }
+}
+
 /**
  * @notice Diagnostic status check to verify relayer address & gas balance on Vercel
  */
@@ -20,8 +37,7 @@ export async function GET() {
     const relayerKey = rawKey.startsWith('0x') ? rawKey : `0x${rawKey}`;
     const creditcoinRpc =
       process.env.NEXT_PUBLIC_CREDITCOIN_RPC_URL || 'https://rpc.cc3-testnet.creditcoin.network';
-    const rawVerifierAddress =
-      process.env.NEXT_PUBLIC_ATTESTCOIN_VERIFIER_ADDRESS || PROTOCOL_CONFIG.contracts.attestcoinVerifier;
+    const verifierAddress = resolveVerifierAddress(process.env.NEXT_PUBLIC_ATTESTCOIN_VERIFIER_ADDRESS);
 
     let address = null;
     let balanceCTC = null;
@@ -46,7 +62,7 @@ export async function GET() {
       relayerAddress: address,
       relayerBalanceCTC: balanceCTC,
       creditcoinRpc,
-      verifierAddress: rawVerifierAddress,
+      verifierAddress,
       keyLength: rawKey.length,
     });
   } catch (err: any) {
@@ -91,14 +107,7 @@ export async function POST(req: NextRequest) {
     const relayerKey = rawKey.startsWith('0x') ? rawKey : `0x${rawKey}`;
     const creditcoinRpc =
       process.env.NEXT_PUBLIC_CREDITCOIN_RPC_URL || 'https://rpc.cc3-testnet.creditcoin.network';
-    const rawVerifierAddress =
-      process.env.NEXT_PUBLIC_ATTESTCOIN_VERIFIER_ADDRESS || PROTOCOL_CONFIG.contracts.attestcoinVerifier;
-    let verifierAddress = rawVerifierAddress;
-    try {
-      verifierAddress = ethers.getAddress(rawVerifierAddress.toLowerCase());
-    } catch {
-      verifierAddress = PROTOCOL_CONFIG.contracts.attestcoinVerifier;
-    }
+    const verifierAddress = resolveVerifierAddress(process.env.NEXT_PUBLIC_ATTESTCOIN_VERIFIER_ADDRESS);
 
     // Truthfully report NOT_CONFIGURED when live relayer key or contract address is absent or invalid
     if (!rawKey || relayerKey.length !== 66 || relayerKey === '0xtrue' || !/^0x[0-9a-fA-F]{64}$/.test(relayerKey)) {
