@@ -656,7 +656,7 @@ export default function DonationsPage() {
                 Donation Console &amp; Verification Pipeline
               </h1>
               <p className="text-xs text-slate-500 mt-0.5">
-                Send testnet aid from Ethereum Sepolia and observe cryptographic proof verification on Creditcoin CC3.
+                Send or simulate testnet evidence from Ethereum Sepolia and observe the Attestcoin-to-Creditcoin verification workflow.
               </p>
             </div>
 

@@ -15,11 +15,11 @@ export default function ProofsPage() {
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-teal-600 animate-pulse"></span>
             <span className="text-xs uppercase tracking-wider text-teal-800 font-bold">
-              CRYPTOGRAPHIC PROOF AUDIT
+              {isDemoMode ? 'CRYPTOGRAPHIC PROOF EVIDENCE (SIMULATED)' : 'CRYPTOGRAPHIC PROOF AUDIT'}
             </span>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mt-1">
-            Cross-Chain Proof Certificates
+            {isDemoMode ? 'Cross-Chain Proof Evidence' : 'Live Cross-Chain Proof Certificate'}
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
             Verifiable storage inclusion proofs bridging Ethereum Sepolia and Creditcoin CC3 Testnet via Attestcoin.
@@ -77,7 +77,9 @@ export default function ProofsPage() {
                 02
               </span>
               <span className="text-xs font-bold text-teal-900">Attestcoin Prover</span>
-              <span className="text-[10px] text-teal-700">Inclusion Proof Generated</span>
+              <span className="text-[10px] text-teal-700">
+                {isDemoMode ? 'Proof Generation Simulated' : 'Inclusion Proof Generated'}
+              </span>
             </div>
 
             <div className="flex items-center justify-center text-slate-300">
@@ -89,7 +91,9 @@ export default function ProofsPage() {
                 03
               </span>
               <span className="text-xs font-bold text-emerald-900">Creditcoin CC3</span>
-              <span className="text-[10px] text-emerald-700">Precompile Verified</span>
+              <span className="text-[10px] text-emerald-700">
+                {isDemoMode ? 'Precompile Verification Simulated' : 'Precompile Verified'}
+              </span>
             </div>
           </div>
         </div>
@@ -241,7 +245,9 @@ export default function ProofsPage() {
             </div>
 
             <div className="p-2.5 bg-white/80 rounded border border-teal-200 text-[11px] text-teal-950 flex items-start gap-2">
-              <span className="material-symbols-outlined text-[15px] text-teal-700 mt-0.5 shrink-0">verified_user</span>
+              <svg className="w-4 h-4 text-teal-700 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+              </svg>
               <div>
                 <strong>Evidence Linkage Note:</strong> Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it.
               </div>

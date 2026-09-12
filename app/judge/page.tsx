@@ -896,7 +896,7 @@ No real humanitarian funds or physical delivery are represented`;
                 <div className="text-teal-400 font-mono font-bold mb-1">0:25 – 0:50 (25s)</div>
                 <div className="font-bold text-white mb-1">3. ATTESTCOIN &amp; TRUTH SEPARATION</div>
                 <p className="text-slate-300 leading-relaxed">
-                  &quot;Our source-chain transaction is real and publicly verifiable on Ethereum Sepolia. The deployed Creditcoin contract interaction is also publicly visible. The current hosted prover endpoint is not available in this presentation environment, so the application clearly separates live public references from simulated proof presentation and never claims unverified data as live proof.&quot;
+                  &quot;The Ethereum Sepolia transaction and Creditcoin contract receipt are publicly verifiable testnet references. The hosted prover endpoint is currently not configured in this presentation environment, so ReliefMesh clearly separates live public references from simulated proof presentation. No unverified data is presented as live cryptographic proof.&quot;
                 </p>
               </div>
 
@@ -920,7 +920,7 @@ No real humanitarian funds or physical delivery are represented`;
                 <div className="text-teal-400 font-mono font-bold mb-1">1:18 – 1:30 (12s)</div>
                 <div className="font-bold text-white mb-1">6. READ-ONLY IMPACTLENS &amp; LIMITATIONS</div>
                 <p className="text-slate-300 leading-relaxed">
-                  &quot;ImpactLens provides read-only deterministic audit checks. All 5 contracts are deployed on Creditcoin CC3 testnet. Thank you!&quot;
+                  &quot;ImpactLens provides a read-only deterministic audit with zero financial authority. ReliefMesh demonstrates how source-chain evidence, Attestcoin proof flow and Creditcoin-side accounting can work together. This is a testnet prototype, not a live humanitarian fund or physical delivery system. Thank you!&quot;
                 </p>
               </div>
             </div>
