@@ -92,6 +92,258 @@ export default function DonationsPage() {
   ];
 
   const [pipelineSteps, setPipelineSteps] = useState<PipelineStep[]>(initialSteps);
+  const [pendingDonation, setPendingDonation] = useState<{
+    txHash: string;
+    minedBlock: number;
+    amount: string;
+    donor: string;
+  } | null>(null);
+
+  // Restore active or previous donation from localStorage on page load
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem('reliefmesh_pending_donation');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.txHash && parsed.minedBlock) {
+          setPendingDonation(parsed);
+          setPipelineSteps((prev) =>
+            prev.map((s) =>
+              s.id === 1
+                ? {
+                    ...s,
+                    status: 'COMPLETED',
+                    hash: parsed.txHash,
+                    timestamp: 'Confirmed',
+                    detail: `Signed and broadcast to Sepolia by ${parsed.donor ? parsed.donor.slice(0, 6) + '...' + parsed.donor.slice(-4) : 'wallet'}.`,
+                    explorerUrl: `https://sepolia.etherscan.io/tx/${parsed.txHash}`,
+                  }
+                : s.id === 2
+                ? {
+                    ...s,
+                    status: 'COMPLETED',
+                    block: parsed.minedBlock,
+                    timestamp: 'Confirmed',
+                    detail: `Confirmed in Sepolia block #${parsed.minedBlock}.`,
+                  }
+                : s.id === 3
+                ? {
+                    ...s,
+                    status: 'ACTIVE',
+                    detail: `Ready to check Creditcoin CC3 attestation status for block #${parsed.minedBlock}.`,
+                  }
+                : s
+            )
+          );
+        }
+      }
+    } catch {}
+  }, []);
+
+  // ---------------------------------------------------------------------------
+  // ROBUST ATTESTATION CHECK & CREDITCOIN SETTLEMENT PIPELINE
+  // ---------------------------------------------------------------------------
+  const executeAttestationCheck = async (
+    targetTxHash: string,
+    minedBlockNumber: number,
+    donationAmount: string,
+    donorAddress: string
+  ) => {
+    setIsProcessing(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    setPipelineSteps((prev) =>
+      prev.map((s) =>
+        s.id === 3
+          ? {
+              ...s,
+              status: 'ACTIVE',
+              detail: `Connecting to Gluwa USC oracle & Creditcoin CC3 consensus for block #${minedBlockNumber}...`,
+            }
+          : s.id >= 4
+          ? {
+              ...s,
+              status: 'PENDING',
+              detail: 'Awaiting block attestation on Creditcoin CC3.',
+            }
+          : s
+      )
+    );
+
+    try {
+      let verificationResult = await verifyDonationWithAttestcoin({
+        sourceChain: 'Ethereum Sepolia',
+        sourceTxHash: targetTxHash,
+        sourceBlockNumber: minedBlockNumber,
+        donor: donorAddress,
+        amount: donationAmount,
+        campaignId: 1,
+        status: 'GENERATING',
+      });
+
+      let finalResult = verificationResult;
+      let attempt = 0;
+      const maxAttempts = 30; // 5 minutes total (checking every 10s)
+
+      while (finalResult.status === 'PENDING' && attempt < maxAttempts) {
+        attempt++;
+        const currentHeight = finalResult.bounds?.parentHeight;
+        const remainingBlocks = currentHeight ? Math.max(0, minedBlockNumber - currentHeight) : null;
+        const progressDetail =
+          remainingBlocks !== null && remainingBlocks > 0
+            ? `Creditcoin CC3 Oracle: Sepolia block #${currentHeight} (target #${minedBlockNumber}, ${remainingBlocks} blocks to sync). Checking every 10s (attempt ${attempt}/${maxAttempts})...`
+            : `Creditcoin CC3 attested height reached! Ingesting cryptographic proof (attempt ${attempt}/${maxAttempts})...`;
+
+        setPipelineSteps((prev) =>
+          prev.map((s) =>
+            s.id === 3
+              ? {
+                  ...s,
+                  status: 'ACTIVE',
+                  timestamp: `Syncing (${attempt}/${maxAttempts})`,
+                  detail: progressDetail,
+                }
+              : s.id >= 4
+              ? {
+                  ...s,
+                  status: 'PENDING',
+                  detail: 'Awaiting attestation finalization on Creditcoin CC3.',
+                }
+              : s
+          )
+        );
+
+        await new Promise((r) => setTimeout(r, 10000));
+
+        finalResult = await verifyDonationWithAttestcoin({
+          sourceChain: 'Ethereum Sepolia',
+          sourceTxHash: targetTxHash,
+          sourceBlockNumber: minedBlockNumber,
+          donor: donorAddress,
+          amount: donationAmount,
+          campaignId: 1,
+          status: 'GENERATING',
+        });
+      }
+
+      if (finalResult.status === 'NOT_CONFIGURED') {
+        setPipelineSteps((prev) =>
+          prev.map((s) =>
+            s.id === 3 || s.id === 4
+              ? {
+                  ...s,
+                  status: 'NOT_CONFIGURED',
+                  timestamp: 'Halted',
+                  detail: finalResult.blockerReason || 'Gluwa BlockProver not configured in server environment.',
+                }
+              : s.id >= 5
+              ? {
+                  ...s,
+                  status: 'PENDING',
+                  detail: 'Execution suspended: Requires live Gluwa USC credentials and CC3 gas account.',
+                }
+              : s
+          )
+        );
+        setIsProcessing(false);
+        setErrorMessage(
+          `TRANSPARENT STATUS: Source transaction ${targetTxHash.slice(0, 10)}... confirmed on Sepolia! Attestcoin proof generation requires active Creditcoin ProofBuilder service. Switch to Demo Simulation Mode or Judge Mode (/judge) to review the full 6-step settlement sequence.`
+        );
+        return;
+      }
+
+      if (finalResult.status === 'PENDING') {
+        setPipelineSteps((prev) =>
+          prev.map((s) =>
+            s.id === 3
+              ? {
+                  ...s,
+                  status: 'ACTIVE',
+                  timestamp: 'Syncing',
+                  detail: `Block #${minedBlockNumber} confirmed on Sepolia! Creditcoin CC3 consensus oracle batches update periodically (~2-5 minutes). Click 'Check CC3 Attestation' anytime to continue checking!`,
+                }
+              : s
+          )
+        );
+        setIsProcessing(false);
+        setSuccessMessage(
+          `SEPOLIA CONFIRMED! Block #${minedBlockNumber} confirmed. Creditcoin CC3 consensus attestation is actively processing. You can click 'Check CC3 Attestation' to continue without re-donating, or review Judge Mode (/judge) for instant verified demonstration.`
+        );
+        return;
+      }
+
+      if (finalResult.status === 'FAILED') {
+        setPipelineSteps((prev) =>
+          prev.map((s) =>
+            s.id >= 3
+              ? {
+                  ...s,
+                  status: 'ERROR',
+                  timestamp: 'Failed',
+                  detail: finalResult.blockerReason || 'Verification rejected.',
+                }
+              : s
+          )
+        );
+        setIsProcessing(false);
+        setErrorMessage(`VERIFICATION FAILED: ${finalResult.blockerReason}`);
+        return;
+      }
+
+      // Step 3 & 4 & 5 & 6 Completed!
+      setPipelineSteps((prev) =>
+        prev.map((s) =>
+          s.id === 3
+            ? {
+                ...s,
+                status: 'COMPLETED',
+                timestamp: 'Just now',
+                detail: 'Block header attested by Gluwa BlockProver oracle on Creditcoin CC3.',
+              }
+            : s.id === 4
+            ? {
+                ...s,
+                status: 'COMPLETED',
+                timestamp: 'Just now',
+                detail: 'Cryptographic Merkle inclusion proof generated and verified via PrecompileBlockProver.',
+              }
+            : s.id === 5
+            ? {
+                ...s,
+                status: 'COMPLETED',
+                hash: finalResult.destinationTxHash,
+                timestamp: 'Just now',
+                detail: 'AttestcoinDonationVerifier validated signature and inscribed on Creditcoin CC3.',
+                explorerUrl: finalResult.destinationTxHash
+                  ? `https://creditcoin-testnet.subscan.io/tx/${finalResult.destinationTxHash}`
+                  : undefined,
+              }
+            : s.id === 6
+            ? {
+                ...s,
+                status: 'COMPLETED',
+                timestamp: 'Just now',
+                detail: `+${donationAmount} tCTC verified and credited to ReliefCampaign on Creditcoin CC3.`,
+              }
+            : s
+        )
+      );
+
+      // Clean up localStorage since settlement succeeded
+      try {
+        localStorage.removeItem('reliefmesh_pending_donation');
+      } catch {}
+
+      setVerifiedTotal((prev) => prev + Number(donationAmount));
+      setDonorCount((prev) => prev + 1);
+      setIsProcessing(false);
+      setSuccessMessage(`VERIFIED: Donated ${donationAmount} SepoliaETH verified across chains and inscribed on Creditcoin CC3!`);
+    } catch (err: any) {
+      setIsProcessing(false);
+      setErrorMessage(err?.message || 'Error executing Creditcoin CC3 attestation check.');
+    }
+  };
 
   // ---------------------------------------------------------------------------
   // REAL TESTNET DONATION EXECUTION FLOW
@@ -189,164 +441,20 @@ export default function DonationsPage() {
         )
       );
 
-      // 3 & 4. Attestcoin Proof Generation via Server Endpoint
-      const verificationResult = await verifyDonationWithAttestcoin({
-        sourceChain: 'Ethereum Sepolia',
-        sourceTxHash: txHash,
-        sourceBlockNumber: minedBlock,
+      // Save to localStorage so browser reload preserves progress
+      const donationPayload = {
+        txHash,
+        minedBlock,
+        amount,
         donor: address,
-        amount: amount,
-        campaignId: 1,
-        status: 'GENERATING',
-      });
+      };
+      try {
+        localStorage.setItem('reliefmesh_pending_donation', JSON.stringify(donationPayload));
+      } catch {}
+      setPendingDonation(donationPayload);
 
-      let finalResult = verificationResult;
-      let attempt = 0;
-
-      // Auto-poll if block attestation is pending on Creditcoin CC3 (up to 15 attempts, ~3 minutes)
-      while (finalResult.status === 'PENDING' && attempt < 15) {
-        attempt++;
-        setPipelineSteps((prev) =>
-          prev.map((s) =>
-            s.id === 3
-              ? {
-                  ...s,
-                  status: 'ACTIVE',
-                  timestamp: `Attesting (${attempt}/15)...`,
-                  detail: `Waiting for Creditcoin CC3 consensus attestation epoch (attempt ${attempt}/15, checking every 10s)...`,
-                }
-              : s.id >= 4
-              ? {
-                  ...s,
-                  status: 'PENDING',
-                  detail: 'Awaiting block attestation on Creditcoin CC3.',
-                }
-              : s
-          )
-        );
-
-        await new Promise((r) => setTimeout(r, 10000));
-
-        finalResult = await verifyDonationWithAttestcoin({
-          sourceChain: 'Ethereum Sepolia',
-          sourceTxHash: txHash,
-          sourceBlockNumber: minedBlock,
-          donor: address,
-          amount: amount,
-          campaignId: 1,
-          status: 'GENERATING',
-        });
-      }
-
-      if (finalResult.status === 'NOT_CONFIGURED') {
-        // Truthful NOT_CONFIGURED state
-        setPipelineSteps((prev) =>
-          prev.map((s) =>
-            s.id === 3 || s.id === 4
-              ? {
-                  ...s,
-                  status: 'NOT_CONFIGURED',
-                  timestamp: 'Halted',
-                  detail: finalResult.blockerReason || 'Gluwa BlockProver not configured in server environment.',
-                }
-              : s.id >= 5
-              ? {
-                  ...s,
-                  status: 'PENDING',
-                  detail: 'Execution suspended: Requires live Gluwa USC credentials and CC3 gas account.',
-                }
-              : s
-          )
-        );
-        setIsProcessing(false);
-        setErrorMessage(
-          `TRANSPARENT STATUS: Source transaction ${txHash.slice(0, 10)}... confirmed on Sepolia! Attestcoin proof generation requires active Creditcoin ProofBuilder service. Switch to Demo Simulation Mode to review the full 6-step settlement sequence.`
-        );
-        return;
-      }
-
-      if (finalResult.status === 'PENDING') {
-        setPipelineSteps((prev) =>
-          prev.map((s) =>
-            s.id === 3
-              ? {
-                  ...s,
-                  status: 'ACTIVE',
-                  timestamp: 'Syncing',
-                  detail: 'Block mined on Sepolia! CC3 attestation is still processing this batch. You can refresh to check again.',
-                }
-              : s
-          )
-        );
-        setIsProcessing(false);
-        setSuccessMessage(
-          `SEPOLIA CONFIRMED! Block #${minedBlock} confirmed. CC3 attestation will include this block shortly. You can also review the verified flow anytime in Judge Mode (/judge).`
-        );
-        return;
-      }
-
-      if (finalResult.status === 'FAILED') {
-        setPipelineSteps((prev) =>
-          prev.map((s) =>
-            s.id >= 3
-              ? {
-                  ...s,
-                  status: 'ERROR',
-                  timestamp: 'Failed',
-                  detail: finalResult.blockerReason || 'Verification rejected.',
-                }
-              : s
-          )
-        );
-        setIsProcessing(false);
-        setErrorMessage(`VERIFICATION FAILED: ${finalResult.blockerReason}`);
-        return;
-      }
-
-      // Step 3 & 4 Completed
-      setPipelineSteps((prev) =>
-        prev.map((s) =>
-          s.id === 3
-            ? {
-                ...s,
-                status: 'COMPLETED',
-                timestamp: 'Just now',
-                detail: 'Block header attested by Gluwa BlockProver oracle.',
-              }
-            : s.id === 4
-            ? {
-                ...s,
-                status: 'COMPLETED',
-                timestamp: 'Just now',
-                detail: 'Cryptographic Merkle inclusion proof generated.',
-              }
-            : s.id === 5
-            ? {
-                ...s,
-                status: 'COMPLETED',
-                hash: finalResult.destinationTxHash,
-                timestamp: 'Just now',
-                detail: 'AttestcoinDonationVerifier validated signature on Creditcoin CC3.',
-                explorerUrl: finalResult.destinationTxHash
-                  ? `https://creditcoin-testnet.subscan.io/tx/${finalResult.destinationTxHash}`
-                  : undefined,
-              }
-            : s.id === 6
-            ? {
-                ...s,
-                status: 'COMPLETED',
-                timestamp: 'Just now',
-                detail: `+${amount} tCTC verified and credited to ReliefCampaign.`,
-              }
-            : s
-        )
-      );
-
-      // 5. Update campaign accounting only after verified settlement
-      setVerifiedTotal((prev) => prev + Number(amount));
-      setDonorCount((prev) => prev + 1);
-      setIsProcessing(false);
-      setSuccessMessage(`VERIFIED: Donated ${amount} SepoliaETH verified across chains and inscribed on Creditcoin CC3!`);
+      // 3. Execute attestation & settlement pipeline
+      await executeAttestationCheck(txHash, minedBlock, amount, address);
     } catch (err: any) {
       setIsProcessing(false);
       const isUserRejected = err?.message?.includes('User rejected') || err?.code === 4001;
@@ -567,6 +675,30 @@ export default function DonationsPage() {
           </div>
         </div>
 
+        {/* Judge Fast-Track Callout Banner */}
+        <div className="bg-gradient-to-r from-teal-900 via-slate-900 to-teal-950 text-white rounded-xl p-4 border border-teal-800/50 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-teal-500/20 border border-teal-400/30 flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-teal-300 text-[20px]">verified</span>
+            </div>
+            <div>
+              <div className="text-xs font-bold text-teal-200">
+                Hackathon Judge Fast-Track Demonstration
+              </div>
+              <p className="text-[11px] text-slate-300">
+                Live testnet attestation batches ingest every 2–5 minutes. To inspect an instant verified CC3 transaction with precompile proof verification and replay defense:
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/judge"
+            className="px-4 py-2 bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold rounded-lg text-xs tracking-wide shrink-0 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+          >
+            <span>Launch 3-Minute Judge Mode</span>
+            <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+          </Link>
+        </div>
+
         {/* 2-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Column: Donation Console Form (5 cols) */}
@@ -580,6 +712,46 @@ export default function DonationsPage() {
                   ? 'Run guided simulation scenarios for evaluation without live gas requirements.'
                   : 'Send real testnet SepoliaETH from your connected browser wallet.'}
               </p>
+
+              {/* Active / Pending Donation Action Banner */}
+              {!isDemoMode && pendingDonation && (
+                <div className="mb-4 p-3.5 rounded-lg bg-blue-50/90 border border-blue-200">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-xs font-bold text-blue-900 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+                      Real Donation Ready for Attestation
+                    </span>
+                    <span className="text-[10px] font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-bold">
+                      Block #{pendingDonation.minedBlock}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-blue-700 font-mono truncate mb-2.5">
+                    Tx: {pendingDonation.txHash}
+                  </p>
+                  <button
+                    type="button"
+                    disabled={isProcessing}
+                    onClick={() =>
+                      executeAttestationCheck(
+                        pendingDonation.txHash,
+                        pendingDonation.minedBlock,
+                        pendingDonation.amount,
+                        pendingDonation.donor
+                      )
+                    }
+                    className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-xs disabled:opacity-50"
+                  >
+                    <span className="material-symbols-outlined text-[15px]">
+                      {isProcessing ? 'sync' : 'refresh'}
+                    </span>
+                    <span>
+                      {isProcessing
+                        ? 'Checking CC3 Oracle Attestation...'
+                        : 'Check CC3 Attestation & Inscribe Proof'}
+                    </span>
+                  </button>
+                </div>
+              )}
 
               {/* Target Campaign Selection */}
               <div className="mb-4">

@@ -43,12 +43,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const rawKey = process.env.BACKEND_PRIVATE_KEY?.trim() || '';
+    const rawKey = (process.env.BACKEND_PRIVATE_KEY || '').trim().replace(/^["']|["']$/g, '');
     const relayerKey = rawKey.startsWith('0x') ? rawKey : `0x${rawKey}`;
     const creditcoinRpc =
       process.env.NEXT_PUBLIC_CREDITCOIN_RPC_URL || 'https://rpc.cc3-testnet.creditcoin.network';
-    const verifierAddress =
+    const rawVerifierAddress =
       process.env.NEXT_PUBLIC_ATTESTCOIN_VERIFIER_ADDRESS || PROTOCOL_CONFIG.contracts.attestcoinVerifier;
+    let verifierAddress = rawVerifierAddress;
+    try {
+      verifierAddress = ethers.getAddress(rawVerifierAddress.toLowerCase());
+    } catch {
+      verifierAddress = PROTOCOL_CONFIG.contracts.attestcoinVerifier;
+    }
 
     // Truthfully report NOT_CONFIGURED when live relayer key or contract address is absent or invalid
     if (!rawKey || relayerKey.length !== 66 || relayerKey === '0xtrue' || !/^0x[0-9a-fA-F]{64}$/.test(relayerKey)) {
@@ -78,6 +84,7 @@ export async function POST(req: NextRequest) {
           error:
             'AttestcoinVerifier: duplicate source transaction. Mathematical replay attack prevented on Creditcoin CC3.',
           sourceTxHash,
+          relayerAddress: wallet.address,
         },
         { status: 409 }
       );
@@ -96,7 +103,39 @@ export async function POST(req: NextRequest) {
       sig = await wallet.signMessage(ethers.getBytes(proofHash));
     }
 
-    // 2. Submit verifyDonationProof on Creditcoin CC3
+    // 2. Preflight verification check via staticCall to get precise revert reasons
+    try {
+      await verifierContract.verifyDonationProof.staticCall(
+        sourceChain,
+        sourceTxHash,
+        BigInt(sourceBlockNumber),
+        donor,
+        parsedAmount,
+        BigInt(campaignId),
+        sig
+      );
+    } catch (staticErr: any) {
+      const revertMsg =
+        staticErr?.revert?.args?.[0] ||
+        staticErr?.reason ||
+        staticErr?.shortMessage ||
+        staticErr?.message ||
+        'Verification staticCall reverted on Creditcoin CC3.';
+
+      const isDuplicate = revertMsg.includes('duplicate') || revertMsg.includes('already verified');
+
+      return NextResponse.json(
+        {
+          status: 'FAILED',
+          rejectionCode: isDuplicate ? 'DUPLICATE_TRANSACTION' : 'CONTRACT_REVERT',
+          error: revertMsg,
+          relayerAddress: wallet.address,
+        },
+        { status: isDuplicate ? 409 : 400 }
+      );
+    }
+
+    // 3. Submit verifyDonationProof on Creditcoin CC3
     const tx = await verifierContract.verifyDonationProof(
       sourceChain,
       sourceTxHash,
@@ -118,10 +157,16 @@ export async function POST(req: NextRequest) {
       gasUsed: receipt.gasUsed.toString(),
       timestamp: new Date().toISOString(),
       verifiedAmount: amount,
+      relayerAddress: wallet.address,
     });
   } catch (error: any) {
     const errorMsg =
-      error?.reason || error?.info?.error?.message || error?.message || 'Transaction reverted on Creditcoin CC3.';
+      error?.revert?.args?.[0] ||
+      error?.reason ||
+      error?.shortMessage ||
+      error?.info?.error?.message ||
+      error?.message ||
+      'Transaction reverted on Creditcoin CC3.';
 
     const isDuplicate =
       errorMsg.includes('duplicate') || errorMsg.includes('already verified');

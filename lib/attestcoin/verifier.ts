@@ -31,6 +31,15 @@ export interface VerificationResult {
   blockNumber?: number;
   isSimulated: boolean;
   blockerReason?: string;
+  bounds?: {
+    parentHeight: number;
+    parentHash?: string;
+    parentIsAttestation?: boolean;
+    childHeight: number;
+    childHash?: string;
+    childIsAttestation?: boolean;
+    isAttested: boolean;
+  };
 }
 
 /**
@@ -76,6 +85,7 @@ export async function verifyDonationWithAttestcoin(
         sourceTxHash: payload.sourceTxHash,
         timestamp,
         isSimulated: false,
+        bounds: proofData.bounds,
         blockerReason:
           proofData.detail ||
           `Sepolia block #${payload.sourceBlockNumber} is confirmed on Sepolia! Creditcoin CC3 consensus attestation takes ~1-3 minutes to ingest new block batches. Once attested, proof generation and CC3 verification can proceed.`,
