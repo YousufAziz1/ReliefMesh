@@ -19,7 +19,7 @@
 **ReliefMesh** is a testnet prototype for proof-backed cross-chain aid coordination. Ethereum Sepolia provides source-chain evidence, Attestcoin provides the cryptographic proof flow, and Creditcoin contracts enforce campaign accounting and duplicate protection. Virtual responder nodes and ImpactLens demonstrate coordination and audit UX without claiming real-world humanitarian delivery.
 
 - **Source Chain**: Ethereum Sepolia (`11155111`) — Confirmed donation transaction (`0xbc2be...e2c4`, Block `#11684082`, `0.0001 ETH`).
-- **Attestation & Prover**: Gluwa Universal Settlement (USC) / Attestcoin — 7 Merkle siblings, 9 continuity roots, Precompile `0x0000000000000000000000000000000000000FD2`.
+- **Attestation & Prover**: Gluwa USC / Attestcoin proof flow is implemented. The current public prover endpoint is not configured, so the proof payload is shown only in simulation mode. *(Simulation fixture metadata: 7 Merkle siblings, 9 continuity roots, Precompile `0x0000000000000000000000000000000000000FD2`)*.
 - **Destination Chain**: Creditcoin CC3 Testnet (`102031`) — Confirmed contract interaction (`0x8dd07...98e3`, Block `#5476394`).
 - **Accounting Isolation**: Source donation is recorded as ETH. Creditcoin campaign accounting tracks testnet relief units upon verification. No 1:1 cross-chain currency conversion is assumed or implied.
 - **Judge Route**: Interactive evaluation console at `/judge` with both real testnet evidence and offline simulation modes.
@@ -29,7 +29,7 @@
 ## 🎯 Problem & Solution
 
 ### The Problem
-Over $30 billion is donated annually to international humanitarian relief, but cross-border disaster response suffers from:
+Cross-border aid systems can face custody, audit and duplicate-claim challenges:
 1. **Bridge Custody Risks**: Traditional cross-chain bridges rely on centralized multi-sigs or liquidity pools that are prime targets for multi-million-dollar exploits.
 2. **Audit Gaps**: Donors cannot verify whether their source funds were accounted for in destination relief registries.
 3. **Double-Claim Vulnerabilities**: Without deterministic on-chain replay protection, aid disbursement systems are vulnerable to duplicate fund releases.
@@ -60,8 +60,9 @@ To maintain complete credibility, ReliefMesh strictly separates three distinct l
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │ 1. CRYPTOGRAPHIC TRUTH                                                      │
-│    Verified inclusion proofs and transaction receipts returned by protocol  │
-│    RPCs (Sepolia Block #11684082, CC3 Block #5476394, Precompile 0x...FD2). │
+│    Live public transaction receipts returned by RPCs, plus proof metadata   │
+│    only when the prover is configured. In current public environment, proof │
+│    payload and precompile verification result remain simulated.             │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │ 2. APPLICATION STATE                                                        │
 │    Campaign records, accounting tallies, and escrow milestones managed by   │

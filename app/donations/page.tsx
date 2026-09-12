@@ -1056,11 +1056,21 @@ export default function DonationsPage() {
                             : step.status}
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{step.subtitle}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        {isDemoMode && step.id === 5
+                          ? 'Simulated CC3 verification state'
+                          : isDemoMode && step.id === 6
+                          ? 'Simulated campaign accounting state'
+                          : step.subtitle}
+                      </p>
 
                       {step.detail && (
                         <p className="text-[11px] text-slate-600 mt-1.5 pt-1.5 border-t border-slate-200 leading-relaxed">
-                          {step.detail}
+                          {isDemoMode && step.id === 5
+                            ? 'Presentation-only state; no live proof is recorded in simulation mode.'
+                            : isDemoMode && step.id === 6
+                            ? 'Presentation-only accounting tally; simulated aid pool update.'
+                            : step.detail}
                         </p>
                       )}
 
