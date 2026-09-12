@@ -1,0 +1,41 @@
+{
+  "network": "Creditcoin CC3 Testnet",
+  "chainId": 102031,
+  "deployer": "0x936cBfC816Cfa2301cEB69aa7Cc6A9B38710FAeF",
+  "deployedAt": "2026-09-11T19:40:50.795Z",
+  "contracts": {
+    "ResponderRegistry": "0xb43743EAD07BE2A0fECF8Ab5a698Ab8c2f914d47",
+    "ReliefCampaign": "0x995fa0F23037E1435dbBb3FDB224eAfe1964d815",
+    "AttestcoinDonationVerifier": "0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2",
+    "AidDeliveryEscrow": "0xE84d28f690117C5b543225EBd7d3afd51131Ff44",
+    "AidPackageRegistry": "0x7e77382E958b80948928B8e073cC63B6EFB865D2",
+    "AttestcoinVerifier": "0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2"
+  },
+  "transactions": {
+    "ResponderRegistry": {
+      "txHash": "0xdcf0e1522addb37438409f707386eb929369be69d9e73a333b57fd9c08babc0b",
+      "blockNumber": 5470982,
+      "gasUsed": "1331945"
+    },
+    "ReliefCampaign": {
+      "txHash": "0x40c49b7acdc2515626dd15ff39b6d85caed1a179c8ff85ccd5edfa0c34559762",
+      "blockNumber": 5470983,
+      "gasUsed": "1155762"
+    },
+    "AttestcoinDonationVerifier": {
+      "txHash": "0x808c05e398cbc3f91f9e0d2113b54ea0908d13ec00060ef56e2def111e4edb6b",
+      "blockNumber": 5470984,
+      "gasUsed": "1117858"
+    },
+    "AidDeliveryEscrow": {
+      "txHash": "0xe261c0eb7106801b8017bf9415940cded64a87eb7e6fca9ee3a2197badb3a00c",
+      "blockNumber": 5470986,
+      "gasUsed": "1576344"
+    },
+    "AidPackageRegistry": {
+      "txHash": "0xbaecaf719fb082ad25690b199e0e54bcd5cd620c283afa711a17ea083e9647d0",
+      "blockNumber": 5470987,
+      "gasUsed": "1833525"
+    }
+  }
+}
