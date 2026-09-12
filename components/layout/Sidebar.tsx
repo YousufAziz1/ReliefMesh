@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAccount, useConnect, useDisconnect, useBalance, useChainId, useSwitchChain } from 'wagmi';
 import { sepolia } from 'wagmi/chains';
@@ -50,8 +51,15 @@ export default function Sidebar() {
       <div className="flex flex-col flex-1 overflow-y-auto px-4 pt-4">
         {/* Logo & Title */}
         <div className="flex items-center gap-3 pb-4 border-b border-slate-200">
-          <div className="w-8 h-8 rounded-full bg-teal-800 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-            RM
+          <div className="w-9 h-9 rounded-xl overflow-hidden bg-white border border-slate-200/80 p-0.5 shadow-xs shrink-0 flex items-center justify-center">
+            <Image
+              src="/logo.png"
+              alt="ReliefMesh Logo"
+              width={36}
+              height={36}
+              className="w-full h-full object-contain"
+              priority
+            />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-1">

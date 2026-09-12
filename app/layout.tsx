@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   title: 'ReliefMesh — Verified Cross-Chain Aid Network',
   description:
     'Testnet Humanitarian Aid Liquidity Protocol verified across Ethereum Sepolia and Creditcoin CC3 with Attestcoin.',
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
 };
 
 export default function RootLayout({

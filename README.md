@@ -1,3 +1,8 @@
+<div align="center">
+  <img src="./public/logo.png" width="120" alt="ReliefMesh Logo" />
+  <br />
+</div>
+
 # ReliefMesh — Verified Cross-Chain Aid Network
 
 > **TESTNET INTEGRATED PROTOCOL & SIMULATION MVP**  
