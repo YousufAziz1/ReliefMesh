@@ -320,7 +320,7 @@ export default function OverviewPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-base font-bold text-slate-900">Recent Protocol Activity</h2>
-              <p className="text-xs text-slate-500">Verified cross-chain inscriptions and milestone completions.</p>
+              <p className="text-xs text-slate-500">Simulated presentation activity based on public testnet evidence references.</p>
             </div>
             <Link href="/activity" className="text-xs text-teal-700 font-semibold hover:underline">
               View Full Activity Feed →

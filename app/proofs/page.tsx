@@ -199,7 +199,7 @@ export default function ProofsPage() {
                 PUBLIC EVIDENCE LINKAGE AUDIT (SOURCE-TO-DESTINATION)
               </span>
               <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-teal-800 bg-teal-100/70 px-2 py-0.5 rounded border border-teal-300">
-                {isDemoMode ? 'SIMULATED PRESENTATION DATA' : 'LIVE CONTRACT EVENT'}
+                {isDemoMode ? 'SIMULATED PRESENTATION DATA' : 'PUBLIC RECEIPT LOGS AUDIT'}
               </span>
             </div>
             
@@ -217,24 +217,24 @@ export default function ProofsPage() {
                   </a>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">Decoded Method Name</span>
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">Method Selector</span>
                   <span className="font-mono text-[11px] text-slate-800 bg-white px-2 py-1 rounded border border-slate-200 block">
-                    0xcf0c7f18 (recordVerifiedDonation / executeReliefAction)
+                    0xcf0c7f18 (Contract interaction observed on CC3)
                   </span>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div>
-                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">Decoded Event Name</span>
-                  <span className="font-mono text-[11px] text-slate-800 bg-white px-2 py-1 rounded border border-slate-200 block">
-                    DonationCredited / ContractInteractionConfirmed
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">Event Linkage</span>
+                  <span className="font-mono text-[11px] text-amber-900 bg-amber-50 px-2 py-1 rounded border border-amber-200 block font-semibold">
+                    NOT VERIFIED IN CURRENT PUBLIC RECEIPT
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">Source Tx Hash Emitted / Read</span>
-                  <span className="font-mono text-[11px] text-slate-800 bg-white px-2 py-1 rounded border border-slate-200 block truncate">
-                    0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">Source-to-Destination Relationship</span>
+                  <span className="font-mono text-[11px] text-slate-800 bg-white px-2 py-1 rounded border border-slate-200 block">
+                    Demo association only; live event linkage pending.
                   </span>
                 </div>
               </div>
@@ -256,7 +256,9 @@ export default function ProofsPage() {
                   <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
                     Donor Address (Sepolia EOA)
                   </span>
-                  <span className="text-[9px] font-mono text-slate-500">LIVE RPC RESPONSE</span>
+                  <span className="text-[9px] font-mono text-slate-500">
+                    {isDemoMode ? 'PUBLIC TESTNET REFERENCE' : 'LIVE RPC RESPONSE'}
+                  </span>
                 </div>
                 <p className="font-mono text-[11px] text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 truncate">
                   0x936cBfC816Cfa2301cEB69aa7Cc6A9B38710FAeF
@@ -268,7 +270,9 @@ export default function ProofsPage() {
                   <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
                     ReliefMesh Sepolia Vault
                   </span>
-                  <span className="text-[9px] font-mono text-slate-500">LIVE RPC RESPONSE</span>
+                  <span className="text-[9px] font-mono text-slate-500">
+                    {isDemoMode ? 'CONFIGURED CONTRACT ADDRESS' : 'LIVE RPC RESPONSE'}
+                  </span>
                 </div>
                 <p className="font-mono text-[11px] text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 truncate">
                   0x71C8391264b192837461928374614f9283746192
@@ -282,7 +286,9 @@ export default function ProofsPage() {
                   <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
                     CC3 Native Precompile Verifier
                   </span>
-                  <span className="text-[9px] font-mono text-slate-500">LIVE PROVER RESPONSE</span>
+                  <span className="text-[9px] font-mono text-slate-500">
+                    {isDemoMode ? 'OFFICIAL PROTOCOL ADDRESS' : 'LIVE PROVER REFERENCE'}
+                  </span>
                 </div>
                 <p className="font-mono text-[11px] text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 truncate">
                   0x0000000000000000000000000000000000000FD2 (PrecompileBlockProver)
@@ -294,7 +300,9 @@ export default function ProofsPage() {
                   <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
                     Attestcoin Merkle State Root
                   </span>
-                  <span className="text-[9px] font-mono text-slate-500">LIVE PROVER RESPONSE</span>
+                  <span className="text-[9px] font-mono text-slate-500">
+                    {isDemoMode ? 'SIMULATED PRESENTATION DATA' : 'LIVE PROVER RESPONSE'}
+                  </span>
                 </div>
                 <p className="font-mono text-[11px] text-slate-600 bg-slate-50 p-2 rounded border border-slate-200 break-all">
                   0x94b94d6d7cee8f80543dc043fb217bcc786f1084d582e645f68dfde464619679

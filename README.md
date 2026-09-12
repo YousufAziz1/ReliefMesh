@@ -127,9 +127,9 @@ ReliefMesh links a verified source donation on Ethereum Sepolia to a contract in
 | **Block Height** | `#11,684,082` | `#5,476,394` |
 | **Value & Gas** | `0.0001 ETH` | `0 CTC` (327,055 gas used) |
 | **Interacted Contract** | `0x71C8391264b192837461928374614f9283746192` (Sepolia Vault) | `0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2` (`AttestcoinDonationVerifier`) |
-| **Decoded Method** | Direct Transfer / Deposit | `0xcf0c7f18` (`recordVerifiedDonation`) |
-| **Decoded Event** | Transfer | `DonationCredited` / `ContractInteractionConfirmed` |
-| **Linkage Evidence Note** | Confirmed on Sepolia RPC | *Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it.* |
+| **Method Selector** | Direct Transfer / Deposit | `0xcf0c7f18` (Contract interaction observed on CC3) |
+| **Event Linkage** | Confirmed Transfer Event | `NOT VERIFIED IN CURRENT PUBLIC RECEIPT` |
+| **Linkage Evidence Note** | Confirmed on Sepolia RPC | *Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it. Demo association only; live event linkage pending.* |
 
 > **Accounting Isolation Note:** No 1:1 cross-chain currency peg or conversion is assumed or implied. Sepolia records ETH; Creditcoin records testnet relief accounting units upon proof verification.
 
@@ -151,31 +151,34 @@ The command queries the live Sepolia and Creditcoin RPCs, reporting 8 specific v
        RELIEFMESH CROSS-CHAIN EVIDENCE VERIFICATION TOOL        
 ================================================================
 
+[Config] Source Tx:          0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4
+[Config] Creditcoin CC3 RPC: https://rpc.cc3-testnet.creditcoin.network
+[Config] Prover Service:     https://prover.cc3-testnet.creditcoin.network/
+
 1. SOURCE TRANSACTION STATUS & BLOCK:
-   ✓ Sepolia Block #11684082 confirmed; Status: SUCCESS (1)
+   ✓ Sepolia Block #11684082 confirmed (Receipt verified on Etherscan); Status: SUCCESS (1)
 
 2. SUPPORTED CHAIN LIST & SELECTED CHAIN KEY:
-   ✓ Supported Chains: [Key 1: Ethereum Sepolia, Key 2: Ethereum Mainnet]
+   ✓ Supported Chains: [Key 1: Ethereum Sepolia, Key 2: Ethereum Mainnet (Test)]
    ✓ Selected Chain Key: 1 (Ethereum Sepolia, Chain ID: 11155111)
 
 3. ATTESTATION STATUS:
-   ✓ Prover Current Attested Height: #11690860
-   ✓ Target Source Block: #11684082 (Attestation Ingestion: ATTESTED)
+   ✓ Prover Current Attested Height: #11690910
+   ✓ Target Source Block: #11684082
+   ✓ Attestation Ingestion: ATTESTED (Enclosed)
 
 4. PROOF BUILDER RESPONSE STATUS:
-   ℹ Prover response: HTTP 404 (Standard testnet public rate limit / endpoint state)
+   ℹ Proof builder response: HTTP 404 (Public testnet endpoint state / unauthenticated)
+   ℹ Proof builder status:   NOT_CONFIGURED
 
 5. PROOF METADATA (HEADER, TX HASH, SIBLING COUNT, CONTINUITY):
-   ✓ Target Tx Hash:        0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4
-   ✓ Merkle State Root:     0x94b94d6d7cee8f80543dc043fb217bcc786f1084d582e645f68dfde464619679
-   ✓ Sibling Hashes Count:  7 intermediate branch nodes
-   ✓ Continuity Proofs:     9 epoch continuity roots verified
-   ✓ Serialized TxBytes:    2,242 bytes
+   ℹ Proof metadata:         NOT_AVAILABLE (Live prover endpoint returned NOT_CONFIGURED)
+   ℹ Presentation fixture:   Withheld in live CLI mode (Shown in simulation mode only)
 
 6. PRECOMPILE BLOCK PROVER (0x...FD2) EXECUTION:
-   ✓ Native Precompile Address: 0x0000000000000000000000000000000000000FD2
-   ✓ Verification Method:       PrecompileBlockProver.verifySingle()
-   ✓ Cryptographic Result:      VALID (Returned true under Substrate host functions)
+   ℹ Precompile verification: NOT_RUN (Requires live proof payload from prover service)
+   ℹ Precompile address:     0x0000000000000000000000000000000000000FD2
+   ℹ Verification method:    PrecompileBlockProver.verifySingle()
 
 7. CREDITCOIN RECEIPT HASH & STATUS:
    ✓ Destination Tx Hash:   0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3
@@ -185,13 +188,46 @@ The command queries the live Sepolia and Creditcoin RPCs, reporting 8 specific v
    ✓ Target Contract:       0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2
 
 8. DECODED EVENT LINKAGE & REPLAY CHECK:
-   ✓ Decoded Method:        0xcf0c7f18 (recordVerifiedDonation / interaction)
-   ✓ Decoded Event:         DonationCredited / ContractInteractionConfirmed
-   ✓ Qualification:         Public CC3 contract interaction associated with the testnet demo;
+   ✓ Method Selector:       0xcf0c7f18 (Contract interaction observed)
+   ℹ Event Linkage:          NOT VERIFIED IN CURRENT PUBLIC RECEIPT
+   ℹ Source-to-Destination:  Demo association only; live event linkage pending.
+   ✓ Verifier Contract:     0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2
+   ✓ Campaign Contract:     0x995fa0F23037E1435dbBb3FDB224eAfe1964d815
+   ℹ Qualification:         Public CC3 contract interaction associated with the testnet demo;
                             source-to-destination linkage is shown only when the live receipt/event confirms it.
+
+================================================================
+          EVIDENCE VERIFICATION AUDIT SUMMARY                   
+================================================================
+Source Transaction (Sepolia):    LIVE VERIFIED (Block #11684082)
+Creditcoin Receipt (CC3):        LIVE VERIFIED (Block #5476394)
+Attestcoin Prover Verification:  NOT_CONFIGURED (HTTP 404)
+Precompile Verification:         NOT_RUN
+Source-to-Destination Linkage:   DEMO ASSOCIATION (Event Pending)
+Application Protocol Mode:       SIMULATION MODE (Presentation Active)
+================================================================
+
+[STATUS] Source/destination reference checks passed.
+[STATUS] Live prover verification: NOT_CONFIGURED.
 ```
 
-*Truthfulness Guarantee: If the prover endpoint or credentials are unavailable, the command exits with `NOT_CONFIGURED` and never mocks `VERIFIED`.*
+### ⚖️ Verification Truthfulness Matrix
+
+```text
+Source transaction:           LIVE VERIFIED (Sepolia Block #11684082)
+Creditcoin receipt:           LIVE VERIFIED (CC3 Block #5476394)
+Attestcoin prover:            NOT_CONFIGURED / PENDING (HTTP 404 on public endpoint)
+Proof metadata:               SIMULATED PRESENTATION DATA (Active in Simulation Mode)
+Precompile verification:      NOT_RUN in live CLI (Simulated in presentation flow)
+Campaign accounting:          SIMULATED (Updated upon verified proof flow)
+Replay protection:            CONTRACT TEST VERIFIED (49 invariant tests passing)
+AI audit (ImpactLens):        LOCAL DETERMINISTIC (Read-only rules; zero financial authority)
+```
+
+> **Honest Verification Guarantee:**
+> - Live RPC checks passed for source and destination public references.
+> - The public Proof-builder endpoint returned HTTP 404 on the public testnet endpoint.
+> - The UI and CLI therefore maintain honest separation: proof metadata and precompile verification are presented in **Simulation Mode**, and unverified data is never claimed as live proof.
 
 Public evidence metadata is also preserved in [`docs/evidence-record.json`](./docs/evidence-record.json).
 

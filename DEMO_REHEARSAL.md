@@ -16,8 +16,8 @@ Judges evaluate dozens of projects. The 90-second path gets directly to the core
 | :--- | :--- | :--- | :--- |
 | **0:00 – 0:10** (10s) | **Header / Disclaimer** | Top Mode Banner & Testnet Notice | *"Judges, over $30B in emergency aid lacks cryptographic verification across chains. ReliefMesh is a testnet prototype for proof-backed cross-chain aid coordination. No real funds, no physical delivery guarantee."* |
 | **0:10 – 0:25** (15s) | **Step 01: Sepolia Tx** | Step 01 card with Etherscan link | *"Here is the real source evidence on Ethereum Sepolia: transaction `0xbc2be...` mined into block `#11684082` depositing `0.0001 ETH`. Confirmed on public Etherscan with zero bridge custody."* |
-| **0:25 – 0:50** (25s) | **Steps 02 & 03: Attestcoin** | Steps 02 & 03 cards (Prover & Roots) | *"Attestcoin consensus attested the block header. The official Gluwa ProofBuilder generated a 2,242-byte inclusion proof with 7 Merkle siblings and 9 continuity roots. Creditcoin CC3’s native EVM precompile at `0x...FD2` verified the proof directly on-chain."* |
-| **0:50 – 1:05** (15s) | **Steps 05 & 06: CC3 State** | Steps 05 & 06 cards (Blockscout & Units) | *"On Creditcoin CC3, the verification settled in block `#5476394`. Notice our strict accounting isolation: testnet relief units are credited only upon proof verification—no 1:1 ETH-to-tCTC currency conversion is assumed or implied."* |
+| **0:25 – 0:50** (25s) | **Steps 02 & 03: Attestcoin** | Steps 02 & 03 cards (Prover & Roots) | *"Our source-chain transaction is real and publicly verifiable on Ethereum Sepolia. The deployed Creditcoin contract interaction is also publicly visible. The current hosted prover endpoint is not available in this presentation environment, so the application clearly separates live public references from simulated proof presentation and never claims unverified data as live proof."* |
+| **0:50 – 1:05** (15s) | **Steps 05 & 06: CC3 State** | Steps 05 & 06 cards (Blockscout & Units) | *"On Creditcoin CC3, the contract interaction settled in block `#5476394`. Notice our strict accounting isolation: testnet relief units are credited upon proof verification—no 1:1 ETH-to-tCTC currency conversion is assumed or implied."* |
 | **1:05 – 1:18** (13s) | **Step 07: Replay Defense** | Click **"Test Replay Revert"** button | *(Click button)* *"Watch our replay defense: when an attacker re-submits the exact same transaction hash, the smart contract intercepts it and immediately reverts on-chain with `AttestcoinVerifier: duplicate source transaction`. Replay is impossible."* |
 | **1:18 – 1:30** (12s) | **Step 08: ImpactLens** | Step 08 card & parity audit | *"Finally, ImpactLens provides a read-only deterministic audit with zero financial authority, certifying 100% ledger parity. 5 contracts are deployed on Creditcoin CC3 testnet. Thank you!"* |
 
@@ -25,14 +25,15 @@ Judges evaluate dozens of projects. The 90-second path gets directly to the core
 
 ## 📋 Judge View Summary (Evidence Cheat Sheet)
 
-| Component | Target Architecture | Real On-Chain Evidence / Live Reference | Status |
+| Component | Target Architecture | Real On-Chain Evidence / Live Reference | Truth Status |
 |---|---|---|---|
-| **Ethereum Sepolia** | Source Donor Network | Tx: [`0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4`](https://sepolia.etherscan.io/tx/0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4) (Block `#11684082`, `0.0001 ETH`) | **LIVE RECEIPT CONFIRMED** |
-| **Attestcoin / USC** | Gluwa Universal Settlement | CC3 Prover Attestation `#11684090` (`https://prover.cc3-testnet.creditcoin.network/`), 7 Merkle siblings, 9 continuity roots | **PROVER CONFIRMED** |
-| **Creditcoin CC3** | Native Precompile & Settlement | Precompile `0x0000000000000000000000000000000000000FD2`, Inscription Tx: [`0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3`](https://creditcoin-testnet.blockscout.com/tx/0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3) (Block `#5476394`) | **LIVE CONTRACT INTERACTION** |
-| **Campaign Accounting** | ReliefCampaign Registry | Campaign #1: *"Assam Flood Relief — Testnet Simulation"*, Accounting: testnet units recorded upon verification; no ETH-to-tCTC peg assumed; Donors: `1` | **APPLICATION STATE CONFIRMED** |
-| **Duplicate Protection**| Replay Attack Defense | Revert String: `"AttestcoinVerifier: duplicate source transaction"`, Replay attempt blocked on-chain | **INVARIANT ENFORCED** |
-| **ImpactLens** | Deterministic Auditor | Read-only deterministic audit engine with optional AI explanation layer (0 ledger discrepancies, Grade A+ certificate) | **LOCAL ANALYSIS CONFIRMED** |
+| **Ethereum Sepolia** | Source Donor Network | Tx: [`0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4`](https://sepolia.etherscan.io/tx/0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4) (Block `#11684082`, `0.0001 ETH`) | **LIVE VERIFIED** |
+| **Creditcoin CC3** | Contract Interaction | Inscription Tx: [`0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3`](https://creditcoin-testnet.blockscout.com/tx/0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3) (Block `#5476394`) | **LIVE VERIFIED** |
+| **Attestcoin Prover** | Gluwa Universal Settlement | Prover Endpoint: `https://prover.cc3-testnet.creditcoin.network/` (Public endpoint returns HTTP 404 in presentation environment) | **NOT_CONFIGURED / PENDING** |
+| **Proof Metadata** | Merkle Branch & Continuity | 7 Merkle siblings, 9 continuity roots, Precompile `0x...FD2` reference | **SIMULATED PRESENTATION DATA** |
+| **Campaign Accounting** | ReliefCampaign Registry | Campaign #1: *"Assam Flood Relief — Testnet Simulation"*, Accounting: testnet units recorded upon verification; no ETH-to-tCTC peg assumed; Donors: `1` | **SIMULATED** |
+| **Duplicate Protection**| Replay Attack Defense | Revert String: `"AttestcoinVerifier: duplicate source transaction"`, Replay attempt blocked on-chain | **CONTRACT TEST VERIFIED** |
+| **ImpactLens** | Deterministic Auditor | Read-only deterministic audit engine with optional AI explanation layer (0 ledger discrepancies, Grade A+ certificate) | **LOCAL DETERMINISTIC** |
 
 ---
 

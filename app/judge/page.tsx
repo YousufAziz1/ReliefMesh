@@ -155,8 +155,9 @@ const REAL_EVIDENCE_STEPS: DemoStep[] = [
         link: 'https://creditcoin-testnet.blockscout.com/address/0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2',
         isHash: true,
       },
-      { label: 'Decoded Method Name', value: '0xcf0c7f18 (recordVerifiedDonation / executeReliefAction)' },
-      { label: 'Decoded Event Name', value: 'DonationCredited / ContractInteractionConfirmed' },
+      { label: 'Method Selector', value: '0xcf0c7f18 (Contract interaction observed on CC3)' },
+      { label: 'Event Linkage', value: 'NOT VERIFIED IN CURRENT PUBLIC RECEIPT' },
+      { label: 'Source-to-Destination Relationship', value: 'Demo association only; live event linkage pending.' },
       { label: 'Linkage Evidence Note', value: 'Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it.' },
     ],
   },
@@ -893,9 +894,9 @@ No real humanitarian funds or physical delivery are represented`;
 
               <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
                 <div className="text-teal-400 font-mono font-bold mb-1">0:25 – 0:50 (25s)</div>
-                <div className="font-bold text-white mb-1">3. ATTESTCOIN PROOF LIFECYCLE</div>
+                <div className="font-bold text-white mb-1">3. ATTESTCOIN &amp; TRUTH SEPARATION</div>
                 <p className="text-slate-300 leading-relaxed">
-                  &quot;Creditcoin CC3 attesters ingest Sepolia headers. Attestcoin mines a cryptographic Merkle inclusion proof without relying on custodial multi-sig bridges.&quot;
+                  &quot;Our source-chain transaction is real and publicly verifiable on Ethereum Sepolia. The deployed Creditcoin contract interaction is also publicly visible. The current hosted prover endpoint is not available in this presentation environment, so the application clearly separates live public references from simulated proof presentation and never claims unverified data as live proof.&quot;
                 </p>
               </div>
 

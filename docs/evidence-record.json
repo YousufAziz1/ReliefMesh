@@ -11,6 +11,6 @@
   "proofGeneratedAt": "2026-09-12T18:02:14Z",
   "proofProvider": "https://prover.cc3-testnet.creditcoin.network/",
   "verificationMethod": "PrecompileBlockProver.verifySingle",
-  "status": "confirmed",
-  "notes": "testnet only. Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it. No real humanitarian funds or physical deliveries are represented."
+  "status": "simulated",
+  "notes": "testnet only. Source transaction and CC3 interaction verified on public explorers. Live prover endpoint returned NOT_CONFIGURED / HTTP 404 in current presentation environment; proof lifecycle presented in simulation mode. Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it. No real humanitarian funds or physical deliveries are represented."
 }
