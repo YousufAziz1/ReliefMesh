@@ -1,0 +1,16 @@
+{
+  "sourceChain": "Ethereum Sepolia",
+  "sourceChainId": 11155111,
+  "sourceTxHash": "0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4",
+  "sourceBlock": 11684082,
+  "sourceValueEth": "0.0001 ETH",
+  "destinationChain": "Creditcoin CC3 Testnet",
+  "destinationChainId": 102031,
+  "destinationTxHash": "0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3",
+  "destinationBlock": 5476394,
+  "proofGeneratedAt": "2026-09-12T18:02:14Z",
+  "proofProvider": "https://prover.cc3-testnet.creditcoin.network/",
+  "verificationMethod": "PrecompileBlockProver.verifySingle",
+  "status": "confirmed",
+  "notes": "testnet only. Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it. No real humanitarian funds or physical deliveries are represented."
+}

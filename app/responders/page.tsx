@@ -181,7 +181,7 @@ export default function RespondersPage() {
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
                         taskId: 101,
-                        responder: '0x71C8391264b192837461928374614f92',
+                        responder: '0x936cBfC816Cfa2301cEB69aa7Cc6A9B38710FAeF',
                         proofHash: '0x8a9fc4219b48c823ea47b912a7810459c381fbc0293847e091b489a29184c4a1',
                       }),
                     });
@@ -220,7 +220,7 @@ export default function RespondersPage() {
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
                         taskId: 102,
-                        responder: '0x71C8391264b192837461928374614f92',
+                        responder: '0x936cBfC816Cfa2301cEB69aa7Cc6A9B38710FAeF',
                         proofHash: '0x8a9fc4219b48c823ea47b912a7810459c381fbc0293847e091b489a29184c4a1', // duplicate
                       }),
                     });

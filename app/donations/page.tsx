@@ -954,7 +954,7 @@ export default function DonationsPage() {
               </div>
               <p className="font-mono text-xs text-slate-800 font-semibold truncate">
                 {isDemoMode
-                  ? '0x71C8391264b192837461928374614f92'
+                  ? '0x936cBfC816Cfa2301cEB69aa7Cc6A9B38710FAeF'
                   : address
                   ? address
                   : 'No wallet connected'}

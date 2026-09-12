@@ -23,7 +23,7 @@ export interface AttestcoinProofPayload {
 
 export interface VerificationResult {
   success: boolean;
-  status: 'NOT_STARTED' | 'PENDING' | 'PROCESSING' | 'VERIFIED' | 'FAILED' | 'NOT_CONFIGURED';
+  status: 'NOT_STARTED' | 'PENDING' | 'PROCESSING' | 'VERIFIED' | 'SIMULATED_VERIFIED' | 'FAILED' | 'NOT_CONFIGURED';
   sourceTxHash: string;
   destinationTxHash?: string;
   verifiedAmount?: string;
@@ -171,12 +171,12 @@ export async function verifyDonationWithAttestcoin(
 export function simulateAttestcoinProof(payload: AttestcoinProofPayload): VerificationResult {
   return {
     success: true,
-    status: 'VERIFIED',
+    status: 'SIMULATED_VERIFIED',
     sourceTxHash: payload.sourceTxHash,
-    destinationTxHash: '0xcc391827' + Math.random().toString(16).slice(2, 10) + '4f92',
+    destinationTxHash: '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
     verifiedAmount: payload.amount,
     timestamp: new Date().toISOString(),
-    blockNumber: payload.sourceBlockNumber || 6841209,
+    blockNumber: payload.sourceBlockNumber || 11684082,
     isSimulated: true,
   };
 }

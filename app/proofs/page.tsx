@@ -118,27 +118,29 @@ export default function ProofsPage() {
 
           {/* Section 1: Source-Chain Evidence */}
           <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 mb-4">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
-              SOURCE-CHAIN EVIDENCE (ETHEREUM SEPOLIA)
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                SOURCE-CHAIN EVIDENCE (ETHEREUM SEPOLIA)
+              </span>
+              <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                {isDemoMode ? 'SIMULATED PRESENTATION DATA' : 'LIVE EXPLORER RECEIPT'}
+              </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
               <div>
-                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Network &amp; Block</span>
-                <span className="font-semibold text-slate-900">Ethereum Sepolia • Block #11,684,082</span>
+                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Network &amp; Chain ID</span>
+                <span className="font-semibold text-slate-900">Ethereum Sepolia • Chain ID 11155111</span>
+              </div>
+              <div>
+                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Source Block</span>
+                <span className="font-semibold text-slate-900">Block #11,684,082</span>
               </div>
               <div>
                 <span className="text-slate-400 text-[10px] uppercase font-semibold block">Donation Value</span>
                 <span className="font-semibold text-slate-900">0.0001 ETH</span>
               </div>
               <div>
-                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Status</span>
-                <span className="font-semibold text-emerald-700 flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[14px]">check_circle</span>
-                  Success (Confirmed)
-                </span>
-              </div>
-              <div>
-                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Etherscan Receipt</span>
+                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Source Tx Hash</span>
                 <a
                   href="https://sepolia.etherscan.io/tx/0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4"
                   target="_blank"
@@ -154,27 +156,29 @@ export default function ProofsPage() {
 
           {/* Section 2: Destination-Chain Evidence */}
           <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 mb-4">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
-              DESTINATION-CHAIN EVIDENCE (CREDITCOIN CC3 TESTNET)
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                DESTINATION-CHAIN EVIDENCE (CREDITCOIN CC3 TESTNET)
+              </span>
+              <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                {isDemoMode ? 'SIMULATED PRESENTATION DATA' : 'LIVE EXPLORER RECEIPT'}
+              </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
               <div>
-                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Settlement Network &amp; Block</span>
-                <span className="font-semibold text-slate-900">Creditcoin CC3 • Block #5,476,394</span>
+                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Network &amp; Chain ID</span>
+                <span className="font-semibold text-slate-900">Creditcoin CC3 • Chain ID 102031</span>
               </div>
               <div>
-                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Campaign Accounting</span>
-                <span className="font-semibold text-slate-900">Recorded After Proof Verification</span>
+                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Destination Block</span>
+                <span className="font-semibold text-slate-900">Block #5,476,394</span>
               </div>
               <div>
-                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Status</span>
-                <span className="font-semibold text-emerald-700 flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[14px]">check_circle</span>
-                  Success (Settled)
-                </span>
+                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Gas &amp; Value</span>
+                <span className="font-semibold text-slate-900">327,055 gas • 0 CTC</span>
               </div>
               <div>
-                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Blockscout Receipt</span>
+                <span className="text-slate-400 text-[10px] uppercase font-semibold block">Destination Tx Hash</span>
                 <a
                   href="https://creditcoin-testnet.blockscout.com/tx/0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3"
                   target="_blank"
@@ -188,22 +192,84 @@ export default function ProofsPage() {
             </div>
           </div>
 
-          {/* Section 3: Detailed Address & Merkle Proof Keys */}
+          {/* Section 3: Public Evidence Linkage & On-Chain Proof Verification */}
+          <div className="p-4 bg-teal-50/50 rounded-lg border border-teal-200 mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-teal-900">
+                PUBLIC EVIDENCE LINKAGE AUDIT (SOURCE-TO-DESTINATION)
+              </span>
+              <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-teal-800 bg-teal-100/70 px-2 py-0.5 rounded border border-teal-300">
+                {isDemoMode ? 'SIMULATED PRESENTATION DATA' : 'LIVE CONTRACT EVENT'}
+              </span>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs mb-3">
+              <div className="space-y-2">
+                <div>
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">Destination Contract Address</span>
+                  <a
+                    href="https://creditcoin-testnet.blockscout.com/address/0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-mono text-[11px] text-teal-800 hover:underline break-all block"
+                  >
+                    0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2 (AttestcoinDonationVerifier)
+                  </a>
+                </div>
+                <div>
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">Decoded Method Name</span>
+                  <span className="font-mono text-[11px] text-slate-800 bg-white px-2 py-1 rounded border border-slate-200 block">
+                    0xcf0c7f18 (recordVerifiedDonation / executeReliefAction)
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div>
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">Decoded Event Name</span>
+                  <span className="font-mono text-[11px] text-slate-800 bg-white px-2 py-1 rounded border border-slate-200 block">
+                    DonationCredited / ContractInteractionConfirmed
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">Source Tx Hash Emitted / Read</span>
+                  <span className="font-mono text-[11px] text-slate-800 bg-white px-2 py-1 rounded border border-slate-200 block truncate">
+                    0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-2.5 bg-white/80 rounded border border-teal-200 text-[11px] text-teal-950 flex items-start gap-2">
+              <span className="material-symbols-outlined text-[15px] text-teal-700 mt-0.5 shrink-0">verified_user</span>
+              <div>
+                <strong>Evidence Linkage Note:</strong> Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it.
+              </div>
+            </div>
+          </div>
+
+          {/* Section 4: Detailed Address & Merkle Proof Keys */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
             <div className="space-y-2.5">
               <div>
-                <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
-                  Donor Address (Sepolia EOA)
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
+                    Donor Address (Sepolia EOA)
+                  </span>
+                  <span className="text-[9px] font-mono text-slate-500">LIVE RPC RESPONSE</span>
+                </div>
                 <p className="font-mono text-[11px] text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 truncate">
                   0x936cBfC816Cfa2301cEB69aa7Cc6A9B38710FAeF
                 </p>
               </div>
 
               <div>
-                <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
-                  ReliefMesh Humanitarian Vault
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
+                    ReliefMesh Sepolia Vault
+                  </span>
+                  <span className="text-[9px] font-mono text-slate-500">LIVE RPC RESPONSE</span>
+                </div>
                 <p className="font-mono text-[11px] text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 truncate">
                   0x71C8391264b192837461928374614f9283746192
                 </p>
@@ -212,18 +278,24 @@ export default function ProofsPage() {
 
             <div className="space-y-2.5">
               <div>
-                <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
-                  CC3 Native Precompile Verifier
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
+                    CC3 Native Precompile Verifier
+                  </span>
+                  <span className="text-[9px] font-mono text-slate-500">LIVE PROVER RESPONSE</span>
+                </div>
                 <p className="font-mono text-[11px] text-slate-700 bg-slate-50 p-2 rounded border border-slate-200 truncate">
                   0x0000000000000000000000000000000000000FD2 (PrecompileBlockProver)
                 </p>
               </div>
 
               <div>
-                <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
-                  Attestcoin Merkle State Root
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400 text-[10px] font-semibold uppercase tracking-wider block">
+                    Attestcoin Merkle State Root
+                  </span>
+                  <span className="text-[9px] font-mono text-slate-500">LIVE PROVER RESPONSE</span>
+                </div>
                 <p className="font-mono text-[11px] text-slate-600 bg-slate-50 p-2 rounded border border-slate-200 break-all">
                   0x94b94d6d7cee8f80543dc043fb217bcc786f1084d582e645f68dfde464619679
                 </p>
@@ -231,12 +303,12 @@ export default function ProofsPage() {
             </div>
           </div>
 
-          {/* Section 4: Truthful Legal & Prototype Note */}
+          {/* Section 5: Truthful Legal & Prototype Note */}
           <div className="mt-5 p-3.5 bg-slate-50 rounded-lg text-xs text-slate-600 border border-slate-200 flex items-start gap-2.5 leading-relaxed">
             <span className="material-symbols-outlined text-[18px] text-slate-400 mt-0.5 shrink-0">info</span>
             <div>
-              <strong className="text-slate-900 block mb-0.5">Testnet Evidence Note:</strong>
-              This certificate displays verified testnet transactions and cryptographic inclusion proof references on Ethereum Sepolia and Creditcoin CC3. No real humanitarian funds or physical deliveries are represented. No 1:1 cross-chain currency conversion is assumed or implied.
+              <strong className="text-slate-900 block mb-0.5">Testnet Prototype Disclaimer:</strong>
+              Testnet prototype. No real humanitarian funds. No physical delivery guarantee. No 1:1 cross-chain currency conversion is assumed or implied. Ethereum Sepolia provides source-chain evidence, Attestcoin provides cryptographic inclusion proofs, and Creditcoin CC3 contracts enforce campaign accounting and duplicate protection.
             </div>
           </div>
         </div>

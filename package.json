@@ -10,7 +10,8 @@
     "compile:contracts": "node scripts/compile-contracts.js",
     "test:contracts": "node scripts/test-contracts.js",
     "deploy:contracts": "node scripts/deploy-cc3-testnet.js",
-    "validate:deployment": "node scripts/validate-cc3-deployment.js"
+    "validate:deployment": "node scripts/validate-cc3-deployment.js",
+    "verify:evidence": "node scripts/verify-evidence.js"
   },
   "dependencies": {
     "@gluwa/usc-sdk": "^0.18.0",

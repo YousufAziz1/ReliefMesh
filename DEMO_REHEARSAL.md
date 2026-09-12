@@ -1,86 +1,52 @@
-# ReliefMesh — 3-Minute Hackathon Demo Script & Judge Rehearsal Guide
+# ReliefMesh — Judge Rehearsal Guide & Demo Scripts
 
-**Project**: ReliefMesh (Cross-Chain Humanitarian Aid Protocol with Attestcoin & Creditcoin CC3)  
-**Target Duration**: Exactly 3 Minutes (180 Seconds)  
-**Live Demo Route**: `/judge` (Interactive Judge Mode)  
-**Production URL / Localhost**: `http://localhost:3000/judge`
+**Project**: ReliefMesh (Proof-backed cross-chain aid coordination with Attestcoin & Creditcoin CC3)  
+**Primary Track**: 90-Second Rapid Judge Mode (Default Path)  
+**Secondary Track**: 3-Minute Comprehensive Technical Review  
+**Live Demo Route**: `/judge` (Interactive Judge Console)  
+**Local / Preview URL**: `http://localhost:3000/judge`
 
 ---
 
-## Judge View Summary (Cheat Sheet for Presenter)
+## ⚡ Default Path: 90-Second Judge Pitch (Strict Hackathon Format)
+
+Judges evaluate dozens of projects. The 90-second path gets directly to the core trust boundary without wasting time on generic navigation.
+
+| Time Window | Focus Step | Visual on Screen (`/judge`) | Spoken Script (Word-for-Word) |
+| :--- | :--- | :--- | :--- |
+| **0:00 – 0:10** (10s) | **Header / Disclaimer** | Top Mode Banner & Testnet Notice | *"Judges, over $30B in emergency aid lacks cryptographic verification across chains. ReliefMesh is a testnet prototype for proof-backed cross-chain aid coordination. No real funds, no physical delivery guarantee."* |
+| **0:10 – 0:25** (15s) | **Step 01: Sepolia Tx** | Step 01 card with Etherscan link | *"Here is the real source evidence on Ethereum Sepolia: transaction `0xbc2be...` mined into block `#11684082` depositing `0.0001 ETH`. Confirmed on public Etherscan with zero bridge custody."* |
+| **0:25 – 0:50** (25s) | **Steps 02 & 03: Attestcoin** | Steps 02 & 03 cards (Prover & Roots) | *"Attestcoin consensus attested the block header. The official Gluwa ProofBuilder generated a 2,242-byte inclusion proof with 7 Merkle siblings and 9 continuity roots. Creditcoin CC3’s native EVM precompile at `0x...FD2` verified the proof directly on-chain."* |
+| **0:50 – 1:05** (15s) | **Steps 05 & 06: CC3 State** | Steps 05 & 06 cards (Blockscout & Units) | *"On Creditcoin CC3, the verification settled in block `#5476394`. Notice our strict accounting isolation: testnet relief units are credited only upon proof verification—no 1:1 ETH-to-tCTC currency conversion is assumed or implied."* |
+| **1:05 – 1:18** (13s) | **Step 07: Replay Defense** | Click **"Test Replay Revert"** button | *(Click button)* *"Watch our replay defense: when an attacker re-submits the exact same transaction hash, the smart contract intercepts it and immediately reverts on-chain with `AttestcoinVerifier: duplicate source transaction`. Replay is impossible."* |
+| **1:18 – 1:30** (12s) | **Step 08: ImpactLens** | Step 08 card & parity audit | *"Finally, ImpactLens provides a read-only deterministic audit with zero financial authority, certifying 100% ledger parity. 5 contracts are deployed on Creditcoin CC3 testnet. Thank you!"* |
+
+---
+
+## 📋 Judge View Summary (Evidence Cheat Sheet)
 
 | Component | Target Architecture | Real On-Chain Evidence / Live Reference | Status |
 |---|---|---|---|
-| **Ethereum Sepolia** | Source Donor Network | Tx: [`0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4`](https://sepolia.etherscan.io/tx/0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4) (Block `#11684082`, `0.0001 ETH`) | **CONFIRMED REAL** |
-| **Attestcoin / USC** | Gluwa Universal Settlement | CC3 Prover Attestation `#11684090` (`https://prover.cc3-testnet.creditcoin.network/`), 7 Merkle siblings, 9 continuity roots | **CONFIRMED REAL** |
-| **Creditcoin CC3** | Consensus & Inscription | Precompile `0x0000000000000000000000000000000000000FD2`, Inscription Tx: [`0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3`](https://creditcoin-testnet.blockscout.com/tx/0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3) (Block `#5476394`) | **CONFIRMED REAL** |
-| **Campaign Accounting** | ReliefCampaign Registry | Campaign #1: *"Assam Flood Relief — Testnet Simulation"*, Accounting: testnet units recorded upon verification; no ETH-to-tCTC peg assumed; Donors: `1` | **CONFIRMED REAL** |
-| **Duplicate Protection**| Replay Attack Defense | Revert String: `"AttestcoinVerifier: duplicate source transaction"`, Replay attempt blocked on-chain | **CONFIRMED REAL** |
-| **ImpactLens** | Deterministic Auditor | Read-only deterministic audit engine with optional AI explanation layer (0 ledger discrepancies, Grade A+ certificate) | **CONFIRMED REAL** |
+| **Ethereum Sepolia** | Source Donor Network | Tx: [`0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4`](https://sepolia.etherscan.io/tx/0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4) (Block `#11684082`, `0.0001 ETH`) | **LIVE RECEIPT CONFIRMED** |
+| **Attestcoin / USC** | Gluwa Universal Settlement | CC3 Prover Attestation `#11684090` (`https://prover.cc3-testnet.creditcoin.network/`), 7 Merkle siblings, 9 continuity roots | **PROVER CONFIRMED** |
+| **Creditcoin CC3** | Native Precompile & Settlement | Precompile `0x0000000000000000000000000000000000000FD2`, Inscription Tx: [`0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3`](https://creditcoin-testnet.blockscout.com/tx/0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3) (Block `#5476394`) | **LIVE CONTRACT INTERACTION** |
+| **Campaign Accounting** | ReliefCampaign Registry | Campaign #1: *"Assam Flood Relief — Testnet Simulation"*, Accounting: testnet units recorded upon verification; no ETH-to-tCTC peg assumed; Donors: `1` | **APPLICATION STATE CONFIRMED** |
+| **Duplicate Protection**| Replay Attack Defense | Revert String: `"AttestcoinVerifier: duplicate source transaction"`, Replay attempt blocked on-chain | **INVARIANT ENFORCED** |
+| **ImpactLens** | Deterministic Auditor | Read-only deterministic audit engine with optional AI explanation layer (0 ledger discrepancies, Grade A+ certificate) | **LOCAL ANALYSIS CONFIRMED** |
 
 ---
 
-## Exact 3-Minute Spoken Pitch Script
-
-### [0:00 – 0:20] THE PROBLEM (20 seconds)
-> *"Judges, over $30 billion is donated annually to humanitarian relief, but cross-border emergency distribution lacks cryptographic verification and ledger transparency between donor chains and local relief registries.*  
-> *Donors on Ethereum have no verifiable cryptographic proof that their funds were reconciled, while field relief records frequently lack on-chain provenance."*
-
----
-
-### [0:20 – 0:45] THE ARCHITECTURE (25 seconds)
-> *"Introducing **ReliefMesh**: a testnet prototype for proof-backed cross-chain aid coordination.*  
-> *It demonstrates how Attestcoin can verify source-chain evidence while Creditcoin contracts enforce campaign accounting and duplicate protection.*  
-> *With ReliefMesh, donors contribute on Ethereum Sepolia. Using Gluwa Universal Settlement proofs and Creditcoin’s native EVM precompile, we cryptographically prove cross-chain inclusion without custodial bridge honeypots."*
-
----
-
-### [0:45 – 1:20] SOURCE EVIDENCE & ATTESTCOIN (35 seconds)
-*(Presenter navigates to `/judge` and points to Steps 01, 02, and 03)*
-> *"Let's examine the real on-chain evidence live on testnet right now.*  
-> *In Step 01, the source transaction is confirmed on Ethereum Sepolia: hash `0xbc2be...` mined into block `#11684082` with value 0.0001 ETH.*  
-> *In Step 02, Creditcoin CC3 consensus attestation verified header continuity through block `#11684090`.*  
-> *In Step 03, the official Gluwa ProofBuilder generated this 2,242-byte cryptographic Merkle inclusion proof with 7 sibling hashes and 9 continuity roots.*  
-> *The application exposes the full Attestcoin proof lifecycle and halts at NOT CONFIGURED if live credentials are not active."*
-
----
-
-### [1:20 – 1:50] CREDITCOIN SETTLEMENT & ACCOUNTING (30 seconds)
-*(Presenter points to Steps 04, 05, and 06)*
-> *"In Step 04, Creditcoin CC3’s native precompile contract at address `0x...FD2`—the `PrecompileBlockProver`—mathematically verified the inclusion proof on-chain and returned `true`.*  
-> *In Step 05, the verification settled on Creditcoin CC3 testnet in block `#5476394`.*  
-> *In Step 06, our `ReliefCampaign` contract updated campaign accounting. Notice the strict accounting isolation: no automatic ETH-to-tCTC conversion is assumed or implied—the campaign records testnet accounting units upon proof verification."*
-
----
-
-### [1:50 – 2:15] DUPLICATE DEFENSE (25 seconds)
-*(Presenter clicks 'Test Replay Revert' on Step 07)*
-> *"The registry rejects duplicate source transactions for this campaign.*  
-> *Watch what happens when we re-submit the already-verified transaction hash `0xbc2be...`: the smart contract immediately checks `verifiedTransactions` and reverts on-chain with the exact error:*  
-> *`AttestcoinVerifier: duplicate source transaction`.*  
-> *Execution halts, a `DuplicateDonationRejected` event is emitted, and the treasury remains completely secure."*
-
----
-
-### [2:15 – 2:40] IMPACTLENS AUDITOR (25 seconds)
-*(Presenter points to Step 08)*
-> *"In Step 08, meet **ImpactLens**: our read-only deterministic audit engine.*  
-> *ImpactLens operates under strict read-only constraints: it has zero transaction authority and cannot move funds.*  
-> *Instead, it combines deterministic ledger verification rules with an optional AI explanation layer, confirming 100% ledger parity between Sepolia deposits and Creditcoin CC3 records."*
-
----
-
-### [2:40 – 3:00] TESTNET PROTOTYPE CONCLUSION (20 seconds)
-> *"To summarize: this is a testnet prototype demonstrating proof-backed cross-chain aid coordination.*  
-> *All 5 contracts are deployed on Creditcoin CC3 testnet, integrated with Attestcoin consensus proofs and native precompiles.*  
-> *Thank you, judges! We are now ready for your questions."*
-
----
-
-## Live Demo Navigation Guide
+## 🧭 Live Demo Navigation Tips for Presenter
 
 1. Open `http://localhost:3000/judge`
-2. Click **"Start 3-Minute Demo"** to initiate the auto-play timer or click individual step pills (`01` to `08`).
-3. Notice the explicit source badges: **`LIVE EXPLORER RECEIPT`**, **`LIVE RPC`**, **`LIVE CONTRACT EVENT`**, and **`LOCAL DETERMINISTIC ANALYSIS`**.
-4. Click the Etherscan and CC3 Blockscout links to inspect the transactions on public block explorers.
-5. Click **"Test Replay Revert"** to demonstrate on-chain duplicate transaction rejection live in the browser.
+2. Click **"Start 90-Second Demo"** to start the 1:30 countdown timer.
+3. Show the prominent header banner:
+   - `LIVE TESTNET MODE — DATA FROM CURRENT RPC/API RESPONSES` vs `SIMULATION MODE — OFFLINE PRESENTATION DATA; NOT LIVE VERIFICATION`
+4. Hover over evidence values to show source badges:
+   - `LIVE RPC RESPONSE`
+   - `LIVE PROVER RESPONSE`
+   - `LIVE EXPLORER RECEIPT`
+   - `LIVE CONTRACT EVENT`
+   - `LOCAL DETERMINISTIC ANALYSIS`
+5. On Step 07, click **"Test Replay Revert"** live in front of the judge. The red badge and revert toast will demonstrate that duplicate transactions cannot penetrate the accounting layer.
+6. Open terminal and run `npm run verify:evidence` if the judge requests an independent CLI audit.

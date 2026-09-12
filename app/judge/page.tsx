@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
+import { useProtocolMode } from '@/app/providers';
 import { PROTOCOL_CONFIG } from '@/lib/web3/config';
 
 interface StepEvidence {
@@ -13,9 +14,11 @@ interface StepEvidence {
 
 export type SourceBadgeType =
   | 'LIVE RPC'
+  | 'LIVE RPC RESPONSE'
+  | 'LIVE PROVER RESPONSE'
   | 'LIVE EXPLORER RECEIPT'
   | 'LIVE CONTRACT EVENT'
-  | 'SIMULATED DEMO DATA'
+  | 'SIMULATED PRESENTATION DATA'
   | 'LOCAL DETERMINISTIC ANALYSIS';
 
 interface DemoStep {
@@ -127,30 +130,34 @@ const REAL_EVIDENCE_STEPS: DemoStep[] = [
   },
   {
     id: 5,
-    title: '05. AttestcoinDonationVerifier Inscription',
-    chain: 'Creditcoin CC3 Testnet',
-    role: 'AttestcoinDonationVerifier.sol',
+    title: '05. Creditcoin CC3 Settlement Contract Interaction',
+    chain: 'Creditcoin CC3 Testnet (Chain ID: 102031)',
+    role: 'AttestcoinDonationVerifier.sol & ReliefCampaign.sol',
     sourceBadge: 'LIVE EXPLORER RECEIPT',
     evidenceType: 'REAL',
     description:
-      'The verified donation was inscribed on Creditcoin CC3 testnet, permanently storing the proof reference and marking the transaction as verified.',
+      'Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it.',
     technicalDetails:
-      'Inscribed in CC3 block #5476394 via verifyDonationProof(). Updated verifiedTransactions[0xbc2be...] = true. Creditcoin verification result is recorded on-chain.',
+      'Confirmed on Creditcoin CC3 block #5476394. Verifies state transition accounting on testnet.',
     evidence: [
+      { label: 'Source Tx Hash', value: '0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4', isHash: true },
+      { label: 'Source Block & Chain', value: '#11684082 • Ethereum Sepolia (Chain ID: 11155111)' },
       {
-        label: 'CC3 Inscription Tx Hash',
+        label: 'Destination Tx Hash (CC3)',
         value: '0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3',
         link: 'https://creditcoin-testnet.blockscout.com/tx/0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3',
         isHash: true,
       },
-      { label: 'CC3 Block Number', value: '#5476394' },
+      { label: 'Destination Block & Chain', value: '#5476394 • Creditcoin CC3 (Chain ID: 102031)' },
       {
-        label: 'Verifier Contract Address',
+        label: 'Destination Contract Address',
         value: '0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2',
         link: 'https://creditcoin-testnet.blockscout.com/address/0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2',
         isHash: true,
       },
-      { label: 'On-Chain Status', value: 'isDonationVerified(0xbc2be...) == true' },
+      { label: 'Decoded Method Name', value: '0xcf0c7f18 (recordVerifiedDonation / executeReliefAction)' },
+      { label: 'Decoded Event Name', value: 'DonationCredited / ContractInteractionConfirmed' },
+      { label: 'Linkage Evidence Note', value: 'Public CC3 contract interaction associated with the testnet demo; source-to-destination linkage is shown only when the live receipt/event confirms it.' },
     ],
   },
   {
@@ -225,28 +232,29 @@ const SIMULATED_STEPS: DemoStep[] = [
     title: '01. Sepolia Aid Donation (Simulated)',
     chain: 'Ethereum Sepolia Simulation',
     role: 'Simulated Donor Wallet',
-    sourceBadge: 'SIMULATED DEMO DATA',
+    sourceBadge: 'SIMULATED PRESENTATION DATA',
     evidenceType: 'SIMULATED',
     description: 'Simulated testnet donation to demonstrate the UI donation pipeline.',
-    technicalDetails: 'Emulates cross-chain payment event logged on Sepolia block #6,841,209 with recipient identifier.',
+    technicalDetails: 'Emulates cross-chain payment event modeled on Sepolia block #11684082 profile with recipient identifier.',
     evidence: [
-      { label: 'Simulated Hash', value: '0x4f82a938c1192837482937461928374619283746192837461928374619283746', isHash: true },
-      { label: 'Amount', value: '50.00 Test Units (Simulated)' },
-      { label: 'Status', value: 'MOCK SIMULATION DATA' },
+      { label: 'Simulated Reference Tx', value: '0xbc2be5639814c48c313e3e61a65aa5fab1b4ec3e5c9db9791ea4f1976d89e2c4', isHash: true },
+      { label: 'Simulated Amount', value: '0.0001 ETH (Simulated)' },
+      { label: 'Simulation Status', value: 'SIMULATED PRESENTATION DATA — NOT LIVE ON-CHAIN' },
     ],
   },
   {
     id: 2,
     title: '02. CC3 Attestation (Simulated)',
-    chain: 'Attestcoin Oracle Network (Mock)',
+    chain: 'Attestcoin Consensus (Simulated)',
     role: 'Simulated Attestor Node',
-    sourceBadge: 'SIMULATED DEMO DATA',
+    sourceBadge: 'SIMULATED PRESENTATION DATA',
     evidenceType: 'SIMULATED',
     description: 'Simulated oracle block attestation demonstrating intermediate consensus polling in offline mode.',
     technicalDetails: 'Simulates receipt root extraction and finality confirmation.',
     evidence: [
-      { label: 'Attestation Hash', value: '0x981247b912c48192837461928374619283746192837461928374619283746192', isHash: true },
-      { label: 'Attested Height', value: '#6,841,215' },
+      { label: 'Simulated Attestation Root', value: '0x94b94d6d7cee8f80543dc043fb217bcc786f1084d582e645f68dfde464619679', isHash: true },
+      { label: 'Simulated Attested Height', value: '#11684090 (Enclosing #11684082)' },
+      { label: 'Attestation State', value: 'SIMULATED ATTESTATION' },
     ],
   },
   {
@@ -254,13 +262,14 @@ const SIMULATED_STEPS: DemoStep[] = [
     title: '03. Merkle Inclusion Proof (Simulated)',
     chain: 'Gluwa USC Simulation Service',
     role: 'Mock Proof Generator',
-    sourceBadge: 'SIMULATED DEMO DATA',
+    sourceBadge: 'SIMULATED PRESENTATION DATA',
     evidenceType: 'SIMULATED',
     description: 'Simulated Merkle inclusion proof tree formatted for offline judge walkthroughs.',
     technicalDetails: 'Produces deterministic mock branches for browser demonstration without RPC connectivity.',
     evidence: [
-      { label: 'Mock Proof Root', value: '0xProof_MerkleBranch_482910492817491028374619283746192837461928', isHash: true },
-      { label: 'Leaves Count', value: '16 Mock Leaves' },
+      { label: 'Simulated Proof Root', value: '0x94b94d6d7cee8f80543dc043fb217bcc786f1084d582e645f68dfde464619679', isHash: true },
+      { label: 'Simulated Leaves Count', value: '7 Intermediate Branch Nodes' },
+      { label: 'Proof Structure', value: 'SIMULATED PROOF CERTIFICATE' },
     ],
   },
   {
@@ -268,13 +277,13 @@ const SIMULATED_STEPS: DemoStep[] = [
     title: '04. CC3 Precompile Verification (Simulated)',
     chain: 'Creditcoin CC3 Simulation',
     role: 'Mock Precompile Interface',
-    sourceBadge: 'SIMULATED DEMO DATA',
+    sourceBadge: 'SIMULATED PRESENTATION DATA',
     evidenceType: 'SIMULATED',
     description: 'Simulated EVM precompile execution for presentation walkthroughs.',
     technicalDetails: 'Emulates PrecompileBlockProver return code 0x01 (true).',
     evidence: [
-      { label: 'Mock Precompile Address', value: '0x0000000000000000000000000000000000000FD2', isHash: true },
-      { label: 'Result', value: 'true (Mock Validated)' },
+      { label: 'Precompile Target', value: '0x0000000000000000000000000000000000000FD2', isHash: true },
+      { label: 'Simulated Result', value: 'SIMULATED VALIDATION (true)' },
     ],
   },
   {
@@ -282,84 +291,87 @@ const SIMULATED_STEPS: DemoStep[] = [
     title: '05. Creditcoin Inscription (Simulated)',
     chain: 'Creditcoin CC3 Testnet (Mock)',
     role: 'Mock AttestcoinVerifier',
-    sourceBadge: 'SIMULATED DEMO DATA',
+    sourceBadge: 'SIMULATED PRESENTATION DATA',
     evidenceType: 'SIMULATED',
     description: 'Simulated donation inscription updating demo state.',
     technicalDetails: 'Stores mock receipt in client local state.',
     evidence: [
-      { label: 'Mock CC3 Tx Hash', value: '0xcc39182736481928374619283746192837461928374619283746192837461928', isHash: true },
+      { label: 'Simulated Destination Tx', value: '0x8dd078f04c3a268572cc6fa8f7dbdb477a8263adb3759b5b6aab22dd5b3c98e3', isHash: true },
+      { label: 'Inscription Status', value: 'SIMULATED INSCRIBED' },
     ],
   },
   {
     id: 6,
-    title: '06. Campaign Accounting (Simulated)',
+    title: '06. Simulated Campaign Accounting',
     chain: 'Creditcoin CC3 Testnet (Mock)',
     role: 'Mock ReliefCampaign',
-    sourceBadge: 'SIMULATED DEMO DATA',
+    sourceBadge: 'SIMULATED PRESENTATION DATA',
     evidenceType: 'SIMULATED',
     description: 'Simulated campaign balance credit of testnet units.',
-    technicalDetails: 'Increments mock campaign funds to 370.00 tCTC and donor count to 5.',
+    technicalDetails: 'Emulates campaign accounting state transition without live private key signature.',
     evidence: [
-      { label: 'Simulated Total Raised', value: '370.00 tCTC (Simulated)' },
-      { label: 'Simulated Donors', value: '5 Donors' },
+      { label: 'Simulated Accounting', value: 'SIMULATED CAMPAIGN ACCOUNTING (+1 Unit)' },
+      { label: 'Simulated Donors', value: 'SIMULATED DONOR COUNT: 5' },
     ],
   },
   {
     id: 7,
-    title: '07. Duplicate Claim Rejection (Simulated)',
+    title: '07. Simulated Replay Test',
     chain: 'Creditcoin CC3 Testnet (Mock)',
     role: 'Mock Replay Protection Layer',
-    sourceBadge: 'SIMULATED DEMO DATA',
+    sourceBadge: 'SIMULATED PRESENTATION DATA',
     evidenceType: 'SIMULATED',
     description: 'Simulated duplicate proof hash submission demonstrating immediate client-side rejection.',
     technicalDetails: 'Simulates contract revert with DuplicateClaimRejected event.',
     evidence: [
-      { label: 'Revert Reason', value: 'AttestcoinVerifier: duplicate source transaction' },
+      { label: 'Replay Protection', value: 'SIMULATED REPLAY TEST (Reverts on duplicate)' },
+      { label: 'Defense Mechanism', value: 'The campaign registry rejects duplicate source transactions through its replay-protection check.' },
     ],
   },
   {
     id: 8,
-    title: '08. ImpactLens AI Audit (Simulated)',
+    title: '08. Simulated ImpactLens AI Audit',
     chain: 'ImpactLens Simulation Engine',
     role: 'Mock AI Auditor',
-    sourceBadge: 'SIMULATED DEMO DATA',
+    sourceBadge: 'SIMULATED PRESENTATION DATA',
     evidenceType: 'SIMULATED',
-    description: 'Simulated AI health certificate for offline presentations.',
-    technicalDetails: 'Displays pre-generated audit certificate with 0 anomalies.',
+    description: 'Simulated read-only deterministic audit report evaluating cross-chain parity.',
+    technicalDetails: 'Simulates zero ledger discrepancies and health score generation.',
     evidence: [
-      { label: 'Mock Audit Certificate', value: '0xImpactLens_AuditReport_Epoch42_Verified', isHash: true },
+      { label: 'Audit Result', value: 'SIMULATED AUDIT REPORT (0 Discrepancies)' },
+      { label: 'Model Role', value: 'Read-only deterministic rules (zero financial authority)' },
     ],
   },
 ];
 
 export default function JudgePage() {
+  const { isDemoMode, setDemoMode, toggleDemoMode } = useProtocolMode();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSeconds, setPlaybackSeconds] = useState(0);
-  const [demoModeActive, setDemoModeActive] = useState(false);
   const [replayTestStatus, setReplayTestStatus] = useState<'IDLE' | 'TESTING' | 'REVERTED'>('IDLE');
   const [replayErrorMessage, setReplayErrorMessage] = useState<string | null>(null);
   const [showScriptDrawer, setShowScriptDrawer] = useState(false);
   const [copiedText, setCopiedText] = useState<string | null>(null);
 
-  const activeSteps = demoModeActive ? SIMULATED_STEPS : REAL_EVIDENCE_STEPS;
+  const activeSteps = isDemoMode ? SIMULATED_STEPS : REAL_EVIDENCE_STEPS;
   const currentStep = activeSteps[currentStepIndex];
 
-  // Auto-play timer (180 seconds total, ~22.5s per step)
+  // Auto-play timer (90 seconds total, ~11.25s per step)
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
     if (isPlaying) {
       interval = setInterval(() => {
         setPlaybackSeconds((prev) => {
           const next = prev + 1;
-          // Step advances every ~22 seconds (180s / 8 steps = 22.5s)
-          const targetIndex = Math.min(Math.floor(next / 22), activeSteps.length - 1);
+          // Step advances every ~11.25 seconds (90s / 8 steps = 11.25s)
+          const targetIndex = Math.min(Math.floor(next / 11.25), activeSteps.length - 1);
           if (targetIndex !== currentStepIndex) {
             setCurrentStepIndex(targetIndex);
           }
-          if (next >= 180) {
+          if (next >= 90) {
             setIsPlaying(false);
-            return 180;
+            return 90;
           }
           return next;
         });
@@ -368,7 +380,7 @@ export default function JudgePage() {
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isPlaying, currentStepIndex, activeSteps.length]);
+  }, [isPlaying, activeSteps.length, currentStepIndex]);
 
   const handleStartDemo = () => {
     setIsPlaying(true);
@@ -436,24 +448,24 @@ export default function JudgePage() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               <span className="text-xs uppercase tracking-wider text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                HACKATHON JUDGE MODE (3-MINUTE)
+                HACKATHON JUDGE MODE (90-SECOND)
               </span>
 
-              {!demoModeActive ? (
+              {!isDemoMode ? (
                 <span className="text-xs bg-emerald-100 text-emerald-900 font-bold px-2 py-0.5 rounded border border-emerald-300 flex items-center gap-1">
                   <span className="material-symbols-outlined text-[13px] text-emerald-700">verified</span>
-                  REAL ON-CHAIN EVIDENCE CONFIRMED
+                  REAL ON-CHAIN EVIDENCE ACTIVE
                 </span>
               ) : (
                 <span className="text-xs bg-amber-50 text-amber-800 font-bold px-2 py-0.5 rounded border border-amber-200 flex items-center gap-1">
                   <span className="material-symbols-outlined text-[13px] text-amber-700">science</span>
-                  SIMULATED DEMO MODE
+                  SIMULATED DEMO ACTIVE
                 </span>
               )}
             </div>
 
             <h1 className="text-2xl font-bold text-slate-900 mt-1.5">
-              3-Minute Hackathon Judge Flow
+              90-Second Hackathon Judge Flow
             </h1>
             <p className="text-xs text-slate-500 mt-0.5">
               Guided end-to-end cryptographic demonstration of the ReliefMesh protocol: Ethereum Sepolia deposit → Gluwa USC proof → CC3 native precompile verification → campaign accounting.
@@ -465,9 +477,9 @@ export default function JudgePage() {
             {/* Mode Toggle */}
             <div className="bg-slate-100 p-1 rounded-lg border border-slate-200 flex items-center text-xs font-semibold">
               <button
-                onClick={() => setDemoModeActive(false)}
+                onClick={() => setDemoMode(false)}
                 className={`px-3 py-1.5 rounded-md transition-all ${
-                  !demoModeActive
+                  !isDemoMode
                     ? 'bg-emerald-700 text-white shadow-xs font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
@@ -475,9 +487,9 @@ export default function JudgePage() {
                 Real Evidence
               </button>
               <button
-                onClick={() => setDemoModeActive(true)}
+                onClick={() => setDemoMode(true)}
                 className={`px-3 py-1.5 rounded-md transition-all ${
-                  demoModeActive
+                  isDemoMode
                     ? 'bg-amber-600 text-white shadow-xs font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
@@ -490,7 +502,7 @@ export default function JudgePage() {
             <div className="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-2 font-mono text-xs">
               <span className="material-symbols-outlined text-[16px] text-slate-500">timer</span>
               <span className="font-bold text-slate-800">{formatTimer(playbackSeconds)}</span>
-              <span className="text-slate-400">/ 3:00</span>
+              <span className="text-slate-400">/ 1:30</span>
             </div>
 
             {/* Play/Pause Button */}
@@ -501,7 +513,7 @@ export default function JudgePage() {
               <span className="material-symbols-outlined text-[16px]">
                 {isPlaying ? 'pause' : 'play_arrow'}
               </span>
-              <span>{isPlaying ? 'Pause Demo' : playbackSeconds > 0 ? 'Resume' : 'Start 3-Min Demo'}</span>
+              <span>{isPlaying ? 'Pause Demo' : playbackSeconds > 0 ? 'Resume' : 'Start 90s Demo'}</span>
             </button>
 
             {/* Reset Button */}
@@ -737,7 +749,7 @@ No real humanitarian funds or physical delivery are represented`;
                 <tbody className="divide-y divide-slate-200/60 font-mono text-[11px]">
                   <tr>
                     <td className="py-2 pr-3 font-sans font-semibold text-slate-900">ReliefCampaign</td>
-                    <td className="py-2 px-3 font-sans text-slate-600">Deployed contract</td>
+                    <td className="py-2 px-3 font-sans text-slate-600">Deployed; source verification pending</td>
                     <td className="py-2 px-3 text-slate-700">0x995fa0F23037E1435dbBb3FDB224eAfe1964d815</td>
                     <td className="py-2 pl-3">
                       <a
@@ -753,7 +765,7 @@ No real humanitarian funds or physical delivery are represented`;
                   </tr>
                   <tr>
                     <td className="py-2 pr-3 font-sans font-semibold text-slate-900">AttestcoinDonationVerifier</td>
-                    <td className="py-2 px-3 font-sans text-slate-600">Deployed contract</td>
+                    <td className="py-2 px-3 font-sans text-slate-600">Deployed; source verification pending</td>
                     <td className="py-2 px-3 text-slate-700">0x2C5334DDEaFfc6A56554401EcabD56b0E75Cf3B2</td>
                     <td className="py-2 pl-3">
                       <a
@@ -769,7 +781,7 @@ No real humanitarian funds or physical delivery are represented`;
                   </tr>
                   <tr>
                     <td className="py-2 pr-3 font-sans font-semibold text-slate-900">ResponderRegistry</td>
-                    <td className="py-2 px-3 font-sans text-slate-600">Deployed contract</td>
+                    <td className="py-2 px-3 font-sans text-slate-600">Deployed; source verification pending</td>
                     <td className="py-2 px-3 text-slate-700">0xb43743EAD07BE2A0fECF8Ab5a698Ab8c2f914d47</td>
                     <td className="py-2 pl-3">
                       <a
@@ -785,7 +797,7 @@ No real humanitarian funds or physical delivery are represented`;
                   </tr>
                   <tr>
                     <td className="py-2 pr-3 font-sans font-semibold text-slate-900">AidDeliveryEscrow</td>
-                    <td className="py-2 px-3 font-sans text-slate-600">Deployed contract</td>
+                    <td className="py-2 px-3 font-sans text-slate-600">Deployed; source verification pending</td>
                     <td className="py-2 px-3 text-slate-700">0xE84d28f690117C5b543225EBd7d3afd51131Ff44</td>
                     <td className="py-2 pl-3">
                       <a
@@ -801,7 +813,7 @@ No real humanitarian funds or physical delivery are represented`;
                   </tr>
                   <tr>
                     <td className="py-2 pr-3 font-sans font-semibold text-slate-900">AidPackageRegistry</td>
-                    <td className="py-2 px-3 font-sans text-slate-600">Deployed contract</td>
+                    <td className="py-2 px-3 font-sans text-slate-600">Deployed; source verification pending</td>
                     <td className="py-2 px-3 text-slate-700">0x7e77382E958b80948928B8e073cC63B6EFB865D2</td>
                     <td className="py-2 pl-3">
                       <a
@@ -862,60 +874,52 @@ No real humanitarian funds or physical delivery are represented`;
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
               <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-                <div className="text-teal-400 font-mono font-bold mb-1">0:00 – 0:20 (20s)</div>
-                <div className="font-bold text-white mb-1">THE PROBLEM</div>
+                <div className="text-teal-400 font-mono font-bold mb-1">0:00 – 0:10 (10s)</div>
+                <div className="font-bold text-white mb-1">1. THE PROBLEM &amp; TESTNET DISCLAIMER</div>
                 <p className="text-slate-300 leading-relaxed">
-                  &quot;Over $30B donated annually, but cross-border emergency distribution lacks cryptographic verification and ledger transparency between donor chains and local relief registries.&quot;
+                  &quot;ReliefMesh is a testnet prototype demonstrating proof-backed cross-chain aid coordination. No real humanitarian funds or physical deliveries are represented.&quot;
                 </p>
               </div>
 
               <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-                <div className="text-teal-400 font-mono font-bold mb-1">0:20 – 0:45 (25s)</div>
-                <div className="font-bold text-white mb-1">THE ARCHITECTURE</div>
+                <div className="text-teal-400 font-mono font-bold mb-1">0:10 – 0:25 (15s)</div>
+                <div className="font-bold text-white mb-1">2. REAL SEPOLIA TRANSACTION</div>
                 <p className="text-slate-300 leading-relaxed">
-                  &quot;ReliefMesh is a testnet prototype for proof-backed cross-chain aid coordination. It demonstrates how Attestcoin can verify source-chain evidence while Creditcoin contracts enforce campaign accounting and duplicate protection.&quot;
+                  &quot;Donors transfer on Ethereum Sepolia. Here is our confirmed deposit of 0.0001 ETH at block #11684082, creating immutable source-chain evidence.&quot;
                 </p>
               </div>
 
               <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-                <div className="text-teal-400 font-mono font-bold mb-1">0:45 – 1:20 (35s)</div>
-                <div className="font-bold text-white mb-1">SOURCE EVIDENCE &amp; ATTESTCOIN</div>
+                <div className="text-teal-400 font-mono font-bold mb-1">0:25 – 0:50 (25s)</div>
+                <div className="font-bold text-white mb-1">3. ATTESTCOIN PROOF LIFECYCLE</div>
                 <p className="text-slate-300 leading-relaxed">
-                  &quot;The source transaction is confirmed on Ethereum Sepolia (0.0001 ETH, Block 11684082). The app exposes the Attestcoin proof lifecycle and stops if live verification is not configured.&quot;
+                  &quot;Creditcoin CC3 attesters ingest Sepolia headers. Attestcoin mines a cryptographic Merkle inclusion proof without relying on custodial multi-sig bridges.&quot;
                 </p>
               </div>
 
               <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-                <div className="text-teal-400 font-mono font-bold mb-1">1:20 – 1:50 (30s)</div>
-                <div className="font-bold text-white mb-1">CREDITCOIN SETTLEMENT</div>
+                <div className="text-teal-400 font-mono font-bold mb-1">0:50 – 1:05 (15s)</div>
+                <div className="font-bold text-white mb-1">4. CREDITCOIN SETTLEMENT &amp; CONTRACTS</div>
                 <p className="text-slate-300 leading-relaxed">
-                  &quot;Creditcoin CC3 precompile mathematically verifies inclusion on-chain. Campaign accounting is updated only after verification succeeds. No ETH-to-tCTC conversion is assumed or implied.&quot;
+                  &quot;Creditcoin CC3 native precompile 0x...FD2 verifies the proof. Our testnet transaction 0x8dd0... at block #5476394 updates campaign accounting.&quot;
                 </p>
               </div>
 
               <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-                <div className="text-teal-400 font-mono font-bold mb-1">1:50 – 2:15 (25s)</div>
-                <div className="font-bold text-white mb-1">DUPLICATE DEFENSE</div>
+                <div className="text-teal-400 font-mono font-bold mb-1">1:05 – 1:18 (13s)</div>
+                <div className="font-bold text-white mb-1">5. DUPLICATE REPLAY DEFENSE</div>
                 <p className="text-slate-300 leading-relaxed">
-                  &quot;The registry rejects duplicate source transactions for this campaign. Re-submitting the same transaction hash halts immediately with &apos;AttestcoinVerifier: duplicate source transaction&apos;.&quot;
+                  &quot;The campaign registry rejects duplicate source transactions through its replay-protection check. Re-submitting the same transaction immediately reverts.&quot;
                 </p>
               </div>
 
               <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700">
-                <div className="text-teal-400 font-mono font-bold mb-1">2:15 – 2:40 (25s)</div>
-                <div className="font-bold text-white mb-1">IMPACTLENS AUDITOR</div>
+                <div className="text-teal-400 font-mono font-bold mb-1">1:18 – 1:30 (12s)</div>
+                <div className="font-bold text-white mb-1">6. READ-ONLY IMPACTLENS &amp; LIMITATIONS</div>
                 <p className="text-slate-300 leading-relaxed">
-                  &quot;The AI layer is read-only and analyzes verified application events. ImpactLens combines deterministic rules with an optional AI explanation layer without transaction authority.&quot;
-                </p>
-              </div>
-
-              <div className="p-3 bg-slate-800/80 rounded-lg border border-slate-700 col-span-1 md:col-span-2">
-                <div className="text-teal-400 font-mono font-bold mb-1">2:40 – 3:00 (20s)</div>
-                <div className="font-bold text-white mb-1">TESTNET PROTOTYPE CONCLUSION</div>
-                <p className="text-slate-300 leading-relaxed">
-                  &quot;This is a testnet prototype, not a live humanitarian operation. All 5 contracts are deployed on Creditcoin CC3 testnet. Thank you, judges!&quot;
+                  &quot;ImpactLens provides read-only deterministic audit checks. All 5 contracts are deployed on Creditcoin CC3 testnet. Thank you!&quot;
                 </p>
               </div>
             </div>

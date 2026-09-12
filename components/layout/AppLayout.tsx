@@ -3,6 +3,7 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import { useProtocolMode } from '@/app/providers';
 import { PROTOCOL_CONFIG } from '@/lib/web3/config';
 
 interface AppLayoutProps {
@@ -10,6 +11,8 @@ interface AppLayoutProps {
 }
 
 export default function AppLayout({ children }: AppLayoutProps) {
+  const { isDemoMode } = useProtocolMode();
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex">
       {/* Sidebar */}
@@ -19,18 +22,28 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <div className="flex-1 ml-72 flex flex-col min-w-0">
         <Header />
 
-        {/* Global Testnet Safety Disclaimer Banner */}
-        <div className="mt-16 bg-amber-50 border-b border-amber-200 px-6 py-1.5 flex items-center justify-between text-[11px] text-amber-900 font-medium">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[15px] text-amber-700">info</span>
-            <span>
-              <strong>TESTNET SIMULATION PROTOCOL:</strong> {PROTOCOL_CONFIG.testnetDisclaimers.globalNotice}
+        {/* Global Explicit Mode Notice Banner (Persistent Across All Pages) */}
+        {isDemoMode ? (
+          <div className="mt-16 bg-amber-100 border-b border-amber-300 px-6 py-2 flex items-center justify-between text-xs text-amber-950 font-bold tracking-wide shadow-xs">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[18px] text-amber-800">warning</span>
+              <span>SIMULATION MODE — OFFLINE PRESENTATION DATA; NOT LIVE VERIFICATION</span>
+            </div>
+            <span className="text-[10px] uppercase font-mono font-bold text-amber-900 bg-amber-200/80 px-2.5 py-0.5 rounded border border-amber-400">
+              OFFLINE FIXTURE MODE
             </span>
           </div>
-          <span className="text-[10px] uppercase font-bold text-amber-700 tracking-wider bg-amber-100 px-2 py-0.5 rounded border border-amber-300">
-            Non-Commercial Hackathon Prototype
-          </span>
-        </div>
+        ) : (
+          <div className="mt-16 bg-teal-800 border-b border-teal-900 px-6 py-2 flex items-center justify-between text-xs text-white font-bold tracking-wide shadow-xs">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[18px] text-teal-300">verified</span>
+              <span>LIVE TESTNET MODE — DATA FROM CURRENT RPC/API RESPONSES</span>
+            </div>
+            <span className="text-[10px] uppercase font-mono font-bold text-teal-100 bg-teal-900/80 px-2.5 py-0.5 rounded border border-teal-700">
+              LIVE TESTNET ON-CHAIN ACTIVE
+            </span>
+          </div>
+        )}
 
         {/* Page Content */}
         <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
